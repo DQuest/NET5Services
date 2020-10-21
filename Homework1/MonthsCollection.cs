@@ -4,7 +4,7 @@
 
     public class MonthsCollection : IEnumerable
     {
-        private readonly string[] _months =
+        private string[] _months =
         {
             "January", "February", "March",
             "April", "May", "June",
