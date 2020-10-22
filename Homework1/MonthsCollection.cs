@@ -4,18 +4,20 @@
 
     public class MonthsCollection : IEnumerable
     {
-        private string[] _months =
+        private int _position = -1;
+
+        private readonly string[] _months =
         {
-            "January", "February", "March",
-            "April", "May", "June",
-            "Jule", "August", "September",
-            "October", "November", "December"
+            "Январь", "Февраль", "Март",
+            "Апрель", "Май", "Июнь",
+            "Июль", "Август", "Сентябрь",
+            "Октябрь", "Ноябрь", "Декабрь"
         };
 
         /// <summary>
         /// Индексатор.
         /// </summary>
-        /// <param name="index">Индекс</param>
+        /// <param name="index">Индекс элемента</param>
         public string this[int index]
         {
             get => _months[index];
@@ -26,9 +28,23 @@
         /// Перечислитель.
         /// </summary>
         /// <returns></returns>
-        public IEnumerator GetEnumerator()
+        IEnumerator IEnumerable.GetEnumerator()
         {
-            return _months.GetEnumerator();
+            return GetEnumerator();
+
+            // Yield return
+            // for (var i = 0; i < _months.Length; i++)
+            // {
+            //     yield return _months[i];
+            // }
+
+            // LINQ-expression
+            // return _months.GetEnumerator();
+        }
+
+        public MonthsEnumerator GetEnumerator()
+        {
+            return new MonthsEnumerator(_months);
         }
     }
 }
