@@ -4,8 +4,6 @@
 
     public class MonthsCollection : IEnumerable
     {
-        private int _position = -1;
-
         private readonly string[] _months =
         {
             "Январь", "Февраль", "Март",
