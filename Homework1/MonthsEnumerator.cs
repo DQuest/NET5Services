@@ -27,7 +27,7 @@
 
         object IEnumerator.Current => Current;
 
-        public string Current
+        private string Current
         {
             get
             {

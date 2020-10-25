@@ -28,7 +28,7 @@
         /// <returns></returns>
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return GetEnumerator();
+            return new MonthsEnumerator(_months);
 
             // Yield return
             // for (var i = 0; i < _months.Length; i++)
@@ -38,11 +38,6 @@
 
             // LINQ-expression
             // return _months.GetEnumerator();
-        }
-
-        public MonthsEnumerator GetEnumerator()
-        {
-            return new MonthsEnumerator(_months);
         }
     }
 }
