@@ -1,14 +1,14 @@
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.OpenApi.Models;
-
 namespace Homework2
 {
     using Homework2.Services.ImageService;
     using Homework2.Services.PriceService;
+    using Homework2.Services.ProductService;
+    using Microsoft.AspNetCore.Builder;
+    using Microsoft.AspNetCore.Hosting;
+    using Microsoft.Extensions.Configuration;
+    using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.Extensions.Hosting;
+    using Microsoft.OpenApi.Models;
 
     public class Startup
     {
@@ -27,6 +27,7 @@ namespace Homework2
 
             services.AddScoped<IImageController, ImageController>();
             services.AddScoped<IPriceController, PriceController>();
+            services.AddScoped<IProductController, ProductController>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
