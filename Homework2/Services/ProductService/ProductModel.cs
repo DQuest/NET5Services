@@ -10,6 +10,11 @@
         public Guid Id { get; set; }
 
         /// <summary>
+        /// Наименование продукта.
+        /// </summary>
+        public string Name { get; set; }
+
+        /// <summary>
         /// Изображения товара.
         /// </summary>
         public IEnumerable<ImageModel> Images { get; set; }
