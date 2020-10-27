@@ -34,14 +34,17 @@
         </e>
         <e p="Services" t="Include">
           <e p="ImageService" t="Include">
+            <e p="IImageController.cs" t="Include" />
             <e p="ImageController.cs" t="Include" />
             <e p="ImageModel.cs" t="Include" />
           </e>
           <e p="PriceService" t="Include">
+            <e p="IPriceController.cs" t="Include" />
             <e p="PriceController.cs" t="Include" />
             <e p="PriceModel.cs" t="Include" />
           </e>
           <e p="ProductService" t="Include">
+            <e p="IProductController.cs" t="Include" />
             <e p="ProductController.cs" t="Include" />
             <e p="ProductModel.cs" t="Include" />
           </e>

@@ -4,7 +4,7 @@
 
     public class ImageModel
     {
-        public Guid Id { get; set; }
+        public long Id { get; set; }
 
         /// <summary>
         /// Наименование изображения.

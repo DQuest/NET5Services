@@ -4,7 +4,7 @@
 
     public class PriceModel
     {
-        public Guid Id { get; set; }
+        public long Id { get; set; }
 
         /// <summary>
         /// Стандартная цена.

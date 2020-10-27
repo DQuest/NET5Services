@@ -7,7 +7,7 @@
 
     public class ProductModel
     {
-        public Guid Id { get; set; }
+        public long Id { get; set; }
 
         /// <summary>
         /// Наименование продукта.
