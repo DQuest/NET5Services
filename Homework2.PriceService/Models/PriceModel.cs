@@ -1,7 +1,5 @@
-﻿namespace Homework2.Services.PriceService
+﻿namespace Homework2.PriceService.Models
 {
-    using System;
-
     public class PriceModel
     {
         public long Id { get; set; }

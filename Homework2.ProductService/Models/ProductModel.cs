@@ -1,9 +1,8 @@
-﻿namespace Homework2.Services.ProductService
+﻿namespace Homework2.Models
 {
-    using System;
     using System.Collections.Generic;
-    using Homework2.Services.ImageService;
-    using Homework2.Services.PriceService;
+    using Homework2.ImageService.Models;
+    using Homework2.PriceService.Models;
 
     public class ProductModel
     {

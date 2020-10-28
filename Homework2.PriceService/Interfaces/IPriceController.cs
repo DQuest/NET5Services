@@ -1,6 +1,7 @@
-﻿namespace Homework2.Services.PriceService
+﻿namespace Homework2.PriceService.Interfaces
 {
     using System.Collections.Generic;
+    using Homework2.PriceService.Models;
 
     public interface IPriceController
     {

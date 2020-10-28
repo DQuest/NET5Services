@@ -1,6 +1,7 @@
-﻿namespace Homework2.Services.ProductService
+﻿namespace Homework2.Interfaces
 {
     using System.Collections.Generic;
+    using Homework2.Models;
 
     public interface IProductController
     {

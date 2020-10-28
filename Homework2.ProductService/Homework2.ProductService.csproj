@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net5.0</TargetFramework>
+        <RootNamespace>Homework2</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="5.5.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Homework2.ImageService\Homework2.ImageService.csproj" />
+      <ProjectReference Include="..\Homework2.PriceService\Homework2.PriceService.csproj" />
+    </ItemGroup>
+
+</Project>

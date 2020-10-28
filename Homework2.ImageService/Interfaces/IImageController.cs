@@ -1,6 +1,7 @@
-﻿namespace Homework2.Services.ImageService
+﻿namespace Homework2.ImageService.Interfaces
 {
     using System.Collections.Generic;
+    using Homework2.ImageService.Models;
 
     public interface IImageController
     {

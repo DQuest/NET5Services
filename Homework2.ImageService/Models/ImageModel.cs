@@ -1,7 +1,5 @@
-﻿namespace Homework2.Services.ImageService
+﻿namespace Homework2.ImageService.Models
 {
-    using System;
-
     public class ImageModel
     {
         public long Id { get; set; }

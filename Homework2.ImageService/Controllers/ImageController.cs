@@ -1,8 +1,10 @@
-﻿namespace Homework2.Services.ImageService
+﻿namespace Homework2.ImageService.Controllers
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using Homework2.ImageService.Interfaces;
+    using Homework2.ImageService.Models;
     using Microsoft.AspNetCore.Mvc;
 
     [Route("api/images")]

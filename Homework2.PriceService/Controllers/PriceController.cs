@@ -1,8 +1,10 @@
-﻿namespace Homework2.Services.PriceService
+﻿namespace Homework2.PriceService.Controllers
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using Homework2.PriceService.Interfaces;
+    using Homework2.PriceService.Models;
     using Microsoft.AspNetCore.Mvc;
 
     [Route("api/prices")]

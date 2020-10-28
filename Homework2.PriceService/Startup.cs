@@ -1,8 +1,7 @@
-namespace Homework2
+namespace Homework2.PriceService
 {
-    using Homework2.Services.ImageService;
-    using Homework2.Services.PriceService;
-    using Homework2.Services.ProductService;
+    using Homework2.PriceService.Controllers;
+    using Homework2.PriceService.Interfaces;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.Extensions.Configuration;
@@ -23,11 +22,10 @@ namespace Homework2
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo {Title = "Homework2", Version = "v1"}); });
-
-            services.AddScoped<IImageController, ImageController>();
-            services.AddScoped<IPriceController, PriceController>();
-            services.AddScoped<IProductController, ProductController>();
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo {Title = "Homework2.PriceService", Version = "v1"});
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -37,7 +35,7 @@ namespace Homework2
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Homework2 v1"));
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Homework2.PriceService v1"));
             }
 
             app.UseHttpsRedirection();
