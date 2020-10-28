@@ -1,6 +1,5 @@
 using System;
 using System.Net.Http;
-using Homework2.PriceService.Interfaces;
 using Homework2.ProductService.Clients;
 using Homework2.ProductService.Interfaces;
 using Microsoft.AspNetCore.Builder;
@@ -56,9 +55,8 @@ namespace Homework2.ProductService
                 BaseAddress = new Uri("https://localhost:5001")
             };
 
-            services.TryAddTransient<IImageClient>(_ => RestService.For<IImageClient>(client, refitSettings));
-
-            services.AddScoped<IPriceService, PriceService.Services.PriceService>();
+            services.TryAddTransient(_ => RestService.For<IImageClient>(client, refitSettings));
+            services.TryAddTransient(_ => RestService.For<IPriceClient>(client, refitSettings));
             services.AddScoped<IProductService, ProductService.Services.ProductService>();
         }
 

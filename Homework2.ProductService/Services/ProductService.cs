@@ -10,18 +10,22 @@ namespace Homework2.ProductService.Services
     public class ProductService : IProductService
     {
         private IEnumerable<ProductModel> _products;
-       // private IEnumerable<ImageModel> _images;
-        
-        private readonly IImageClient _imageClient;
 
-        public ProductService(IImageClient imageClient)
+        private readonly IImageClient _imageClient;
+        private readonly IPriceClient _priceClient;
+
+        public ProductService(IImageClient imageClient, IPriceClient priceClient)
         {
             _imageClient = imageClient;
+            _priceClient = priceClient;
 
             FillProducts();
         }
 
-        public IEnumerable<ProductModel> GetAll() => _products;
+        public IEnumerable<ProductModel> GetAll()
+        {
+            return _products;
+        }
 
         public ProductModel Get(long id)
         {
@@ -37,8 +41,6 @@ namespace Homework2.ProductService.Services
 
         private void FillProducts()
         {
-            var test = _imageClient.GetAll();
-
             _products = new List<ProductModel>
             {
                 new ProductModel
@@ -46,21 +48,21 @@ namespace Homework2.ProductService.Services
                     Id = 1,
                     Name = "FirstProduct",
                     Images = _imageClient.GetAll().Where(x => x.Id == 1 || x.Id == 2),
-                    /*Prices = _priceService.GetAll().Where(x => x.Id == 1 || x.Id == 2)*/
+                    Prices = _priceClient.GetAll().Where(x => x.Id == 1 || x.Id == 2)
                 },
                 new ProductModel
                 {
                     Id = 2,
                     Name = "SecondProduct",
-                    /*Images = _imageService.GetAll().Where(x => x.Id == 3 || x.Id == 4),
-                    Prices = _priceService.GetAll().Where(x => x.Id == 3 || x.Id == 4)*/
+                    Images = _imageClient.GetAll().Where(x => x.Id == 3 || x.Id == 4),
+                    Prices = _priceClient.GetAll().Where(x => x.Id == 3 || x.Id == 4)
                 },
                 new ProductModel
                 {
                     Id = 3,
                     Name = "ThirdProduct",
-                    /*Images = _imageService.GetAll().Where(x => x.Id == 5),
-                    Prices = _priceService.GetAll().Where(x => x.Id == 5)*/
+                    Images = _imageClient.GetAll().Where(x => x.Id == 5),
+                    Prices = _priceClient.GetAll().Where(x => x.Id == 5)
                 }
             };
         }

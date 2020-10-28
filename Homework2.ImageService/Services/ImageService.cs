@@ -10,9 +10,15 @@ namespace Homework2.ImageService.Services
     {
         private IEnumerable<ImageModel> _images;
 
-        public ImageService() => FillImages();
+        public ImageService()
+        {
+            FillImages();
+        }
 
-        public IEnumerable<ImageModel> GetAll() => _images;
+        public IEnumerable<ImageModel> GetAll()
+        {
+            return _images;
+        }
 
         public ImageModel Get(long id)
         {
@@ -26,13 +32,16 @@ namespace Homework2.ImageService.Services
             return image;
         }
 
-        private void FillImages() => _images = new List<ImageModel>
+        private void FillImages()
         {
-            new ImageModel {Id = 1, ImageName = "FirstImage", ImagePath = "FirstPath"},
-            new ImageModel {Id = 2, ImageName = "SecondImage", ImagePath = "SecondPath"},
-            new ImageModel {Id = 3, ImageName = "ThirdImage", ImagePath = "ThirdPath"},
-            new ImageModel {Id = 4, ImageName = "FourthImage", ImagePath = "FourthPath"},
-            new ImageModel {Id = 5, ImageName = "FifthImage", ImagePath = "FifthPath"}
-        };
+            _images = new List<ImageModel>
+            {
+                new ImageModel {Id = 1, ImageName = "FirstImage", ImagePath = "FirstPath"},
+                new ImageModel {Id = 2, ImageName = "SecondImage", ImagePath = "SecondPath"},
+                new ImageModel {Id = 3, ImageName = "ThirdImage", ImagePath = "ThirdPath"},
+                new ImageModel {Id = 4, ImageName = "FourthImage", ImagePath = "FourthPath"},
+                new ImageModel {Id = 5, ImageName = "FifthImage", ImagePath = "FifthPath"}
+            };
+        }
     }
 }

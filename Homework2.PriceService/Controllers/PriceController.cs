@@ -16,11 +16,15 @@ namespace Homework2.PriceService.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<PriceModel> GetAll() =>
-            _priceService.GetAll();
+        public IEnumerable<PriceModel> GetAll()
+        {
+            return _priceService.GetAll();
+        }
 
         [HttpGet("{id}")]
-        public PriceModel Get(long id) =>
-            _priceService.Get(id);
+        public PriceModel Get(long id)
+        {
+            return _priceService.Get(id);
+        }
     }
 }

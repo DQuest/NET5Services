@@ -16,11 +16,15 @@ namespace Homework2.ProductService.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<ProductModel> GetAll() =>
-            _productService.GetAll();
+        public IEnumerable<ProductModel> GetAll()
+        {
+            return _productService.GetAll();
+        }
 
         [HttpGet("{id}")]
-        public ProductModel Get(long id) =>
-            _productService.Get(id);
+        public ProductModel Get(long id)
+        {
+            return _productService.Get(id);
+        }
     }
 }

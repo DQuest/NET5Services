@@ -10,9 +10,15 @@ namespace Homework2.PriceService.Services
     {
         private IEnumerable<PriceModel> _prices;
 
-        public PriceService() => FillPrices();
+        public PriceService()
+        {
+            FillPrices();
+        }
 
-        public IEnumerable<PriceModel> GetAll() => _prices;
+        public IEnumerable<PriceModel> GetAll()
+        {
+            return _prices;
+        }
 
         public PriceModel Get(long id)
         {
@@ -26,13 +32,16 @@ namespace Homework2.PriceService.Services
             return price;
         }
 
-        private void FillPrices() => _prices = new List<PriceModel>
+        private void FillPrices()
         {
-            new PriceModel {Id = 1, DiscountPrice = 1000, SellPrice = 1500},
-            new PriceModel {Id = 2, DiscountPrice = 1500, SellPrice = 2000},
-            new PriceModel {Id = 3, DiscountPrice = 2000, SellPrice = 2500},
-            new PriceModel {Id = 4, DiscountPrice = 2500, SellPrice = 3000},
-            new PriceModel {Id = 5, DiscountPrice = 3000, SellPrice = 3500}
-        };
+            _prices = new List<PriceModel>
+            {
+                new PriceModel {Id = 1, DiscountPrice = 1000, SellPrice = 1500},
+                new PriceModel {Id = 2, DiscountPrice = 1500, SellPrice = 2000},
+                new PriceModel {Id = 3, DiscountPrice = 2000, SellPrice = 2500},
+                new PriceModel {Id = 4, DiscountPrice = 2500, SellPrice = 3000},
+                new PriceModel {Id = 5, DiscountPrice = 3000, SellPrice = 3500}
+            };
+        }
     }
 }

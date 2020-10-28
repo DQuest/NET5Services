@@ -11,8 +11,4 @@
         <PackageReference Include="Swashbuckle.AspNetCore" Version="5.5.1" />
     </ItemGroup>
 
-    <ItemGroup>
-      <ProjectReference Include="..\Homework2.PriceService\Homework2.PriceService.csproj" />
-    </ItemGroup>
-
 </Project>

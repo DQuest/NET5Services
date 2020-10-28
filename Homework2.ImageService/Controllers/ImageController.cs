@@ -16,12 +16,15 @@ namespace Homework2.ImageService.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<ImageModel> GetAll() =>
-            _imageService.GetAll();
-
+        public IEnumerable<ImageModel> GetAll()
+        {
+            return _imageService.GetAll();
+        }
 
         [HttpGet("{id}")]
-        public ImageModel Get(long id) =>
-            _imageService.Get(id);
+        public ImageModel Get(long id)
+        {
+            return _imageService.Get(id);
+        }
     }
 }
