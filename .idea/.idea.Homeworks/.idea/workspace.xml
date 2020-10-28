@@ -12,38 +12,7 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c2919b16-66b5-4f57-8f1a-9e17bd668bb5" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/Homework2.ImageService/Program.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Homework2.ImageService/Properties/launchSettings.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Homework2.ImageService/Startup.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Homework2.PriceService/Homework2.PriceService.csproj" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Homework2.PriceService/Program.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Homework2.PriceService/Properties/launchSettings.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Homework2.PriceService/Startup.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Homework2.PriceService/appsettings.Development.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Homework2.PriceService/appsettings.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Homework2.ProductService/Homework2.ProductService.csproj" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Homework2.ProductService/appsettings.Development.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Homework2.ProductService/appsettings.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.Homeworks/.idea/contentModel.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Homeworks/.idea/contentModel.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.Homeworks/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Homeworks/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Homework2/Homework2.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Homework2.ImageService/Homework2.ImageService.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Homework2/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Homework2.ProductService/Program.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Homework2/Properties/launchSettings.json" beforeDir="false" afterPath="$PROJECT_DIR$/Homework2.ProductService/Properties/launchSettings.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Homework2/Services/ImageService/IImageController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Homework2.ImageService/Interfaces/IImageController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Homework2/Services/ImageService/ImageController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Homework2.ImageService/Controllers/ImageController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Homework2/Services/ImageService/ImageModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Homework2.ImageService/Models/ImageModel.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Homework2/Services/PriceService/IPriceController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Homework2.PriceService/Interfaces/IPriceController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Homework2/Services/PriceService/PriceController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Homework2.PriceService/Controllers/PriceController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Homework2/Services/PriceService/PriceModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Homework2.PriceService/Models/PriceModel.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Homework2/Services/ProductService/IProductController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Homework2.ProductService/Interfaces/IProductController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Homework2/Services/ProductService/ProductController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Homework2.ProductService/Controllers/ProductController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Homework2/Services/ProductService/ProductModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Homework2.ProductService/Models/ProductModel.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Homework2/Startup.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Homework2.ProductService/Startup.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Homework2/appsettings.Development.json" beforeDir="false" afterPath="$PROJECT_DIR$/Homework2.ImageService/appsettings.Development.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Homework2/appsettings.json" beforeDir="false" afterPath="$PROJECT_DIR$/Homework2.ImageService/appsettings.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Homeworks.sln" beforeDir="false" afterPath="$PROJECT_DIR$/Homeworks.sln" afterDir="false" />
-    </list>
+    <list default="true" id="c2919b16-66b5-4f57-8f1a-9e17bd668bb5" name="Default Changelist" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -91,8 +60,6 @@
         <option value="$PROJECT_DIR$/Homework2/Services/PriceService/PriceController.cs" />
         <option value="$PROJECT_DIR$/Homework2/Services/ImageService/ImageController.cs" />
         <option value="$PROJECT_DIR$/Homework2/Startup.cs" />
-        <option value="$PROJECT_DIR$/Homework2.PriceService/Startup.cs" />
-        <option value="$PROJECT_DIR$/Homework2.ImageService/Startup.cs" />
         <option value="$PROJECT_DIR$/Homework2.ProductService/Services/ProductService/ProductModel.cs" />
         <option value="$PROJECT_DIR$/Homework2.ImageService/Controllers/ImageController.cs" />
         <option value="$PROJECT_DIR$/Homework2.ImageService/Interfaces/IImageController.cs" />
@@ -103,8 +70,10 @@
         <option value="$PROJECT_DIR$/Homework2.ProductService/Controllers/ProductController.cs" />
         <option value="$PROJECT_DIR$/Homework2.ProductService/Interfaces/IProductController.cs" />
         <option value="$PROJECT_DIR$/Homework2.ProductService/Models/ProductModel.cs" />
-        <option value="$PROJECT_DIR$/Homework2.ProductService/Startup.cs" />
         <option value="$PROJECT_DIR$/Homework2.ProductService/Properties/launchSettings.json" />
+        <option value="$PROJECT_DIR$/Homework2.PriceService/Startup.cs" />
+        <option value="$PROJECT_DIR$/Homework2.ImageService/Startup.cs" />
+        <option value="$PROJECT_DIR$/Homework2.ProductService/Startup.cs" />
       </list>
     </option>
   </component>
@@ -261,7 +230,7 @@
       <workItem from="1603792112739" duration="3664000" />
       <workItem from="1603807948382" duration="5618000" />
       <workItem from="1603867773791" duration="550000" />
-      <workItem from="1603876906398" duration="1020000" />
+      <workItem from="1603876906398" duration="1340000" />
     </task>
     <task id="LOCAL-00001" summary="init workspace">
       <created>1603040126140</created>
@@ -333,7 +302,14 @@
       <option name="project" value="LOCAL" />
       <updated>1603868211037</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="Задача разбита на 3 проекта">
+      <created>1603878210494</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1603878210494</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -363,29 +339,30 @@
     <MESSAGE value="Сделано второе ДЗ" />
     <MESSAGE value="Добавлена зависимость ProductController" />
     <MESSAGE value="Доработка роутинга, вынос заполнения в методы" />
-    <option name="LAST_COMMIT_MESSAGE" value="Доработка роутинга, вынос заполнения в методы" />
+    <MESSAGE value="Задача разбита на 3 проекта" />
+    <option name="LAST_COMMIT_MESSAGE" value="Задача разбита на 3 проекта" />
   </component>
   <component name="WindowStateProjectService">
     <state x="408" y="134" width="1092" height="714" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1603877943249">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="408" y="134" width="1092" height="714" key="#com.intellij.execution.impl.EditConfigurationsDialog/1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1603877943249" />
-    <state width="1877" height="282" key="GridCell.Tab.0.bottom" timestamp="1603877906107">
+    <state width="1877" height="282" key="GridCell.Tab.0.bottom" timestamp="1603878057968">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="282" key="GridCell.Tab.0.bottom/1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1603877906107" />
-    <state width="1877" height="282" key="GridCell.Tab.0.center" timestamp="1603877906106">
+    <state width="1877" height="282" key="GridCell.Tab.0.bottom/1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1603878057968" />
+    <state width="1877" height="282" key="GridCell.Tab.0.center" timestamp="1603878057968">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="282" key="GridCell.Tab.0.center/1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1603877906106" />
-    <state width="1877" height="282" key="GridCell.Tab.0.left" timestamp="1603877906106">
+    <state width="1877" height="282" key="GridCell.Tab.0.center/1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1603878057968" />
+    <state width="1877" height="282" key="GridCell.Tab.0.left" timestamp="1603878057968">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="282" key="GridCell.Tab.0.left/1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1603877906106" />
-    <state width="1877" height="282" key="GridCell.Tab.0.right" timestamp="1603877906107">
+    <state width="1877" height="282" key="GridCell.Tab.0.left/1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1603878057968" />
+    <state width="1877" height="282" key="GridCell.Tab.0.right" timestamp="1603878057968">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="282" key="GridCell.Tab.0.right/1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1603877906107" />
+    <state width="1877" height="282" key="GridCell.Tab.0.right/1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1603878057968" />
     <state width="1877" height="375" key="GridCell.Tab.1.bottom" timestamp="1603868328683">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -466,10 +443,10 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="92" y="92" width="1736" height="856" key="VCS.FileHistoryDialog/1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1603389302964" />
-    <state x="552" y="253" key="Vcs.Push.Dialog.v2" timestamp="1603868212454">
+    <state x="552" y="253" key="Vcs.Push.Dialog.v2" timestamp="1603878258028">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="552" y="253" key="Vcs.Push.Dialog.v2/1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1603868212454" />
+    <state x="552" y="253" key="Vcs.Push.Dialog.v2/1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1603878258028" />
     <state x="777" y="434" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1603388948458">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
