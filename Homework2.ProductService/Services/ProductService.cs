@@ -16,8 +16,8 @@ namespace Homework2.ProductService.Services
 
         public ProductService(IImageClient imageClient, IPriceClient priceClient)
         {
-            _imageClient = imageClient;
-            _priceClient = priceClient;
+            _imageClient = imageClient ?? throw new ArgumentNullException(nameof(imageClient));
+            _priceClient = priceClient ?? throw new ArgumentNullException(nameof(priceClient));
 
             FillProducts();
         }
