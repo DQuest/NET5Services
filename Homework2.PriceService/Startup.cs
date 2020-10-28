@@ -1,14 +1,13 @@
+using Homework2.PriceService.Interfaces;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
+
 namespace Homework2.PriceService
 {
-    using Homework2.PriceService.Controllers;
-    using Homework2.PriceService.Interfaces;
-    using Microsoft.AspNetCore.Builder;
-    using Microsoft.AspNetCore.Hosting;
-    using Microsoft.Extensions.Configuration;
-    using Microsoft.Extensions.DependencyInjection;
-    using Microsoft.Extensions.Hosting;
-    using Microsoft.OpenApi.Models;
-
     public class Startup
     {
         public Startup(IConfiguration configuration)
@@ -26,6 +25,8 @@ namespace Homework2.PriceService
             {
                 c.SwaggerDoc("v1", new OpenApiInfo {Title = "Homework2.PriceService", Version = "v1"});
             });
+
+            services.AddScoped<IPriceService, Services.PriceService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

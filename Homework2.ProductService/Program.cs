@@ -1,8 +1,8 @@
-namespace Homework2
-{
-    using Microsoft.AspNetCore.Hosting;
-    using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
 
+namespace Homework2.ProductService
+{
     public class Program
     {
         public static void Main(string[] args)

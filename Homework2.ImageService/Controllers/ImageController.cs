@@ -1,51 +1,27 @@
-﻿namespace Homework2.ImageService.Controllers
+﻿using System.Collections.Generic;
+using Homework2.ImageService.Interfaces;
+using Homework2.ImageService.Models;
+using Microsoft.AspNetCore.Mvc;
+
+namespace Homework2.ImageService.Controllers
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using Homework2.ImageService.Interfaces;
-    using Homework2.ImageService.Models;
-    using Microsoft.AspNetCore.Mvc;
-
     [Route("api/images")]
-    public class ImageController : Controller, IImageController
+    public class ImageController : Controller
     {
-        private IEnumerable<ImageModel> _images;
+        private readonly IImageService _imageService;
 
-        public ImageController()
+        public ImageController(IImageService imageService)
         {
-            FillImages();
+            _imageService = imageService;
         }
 
         [HttpGet]
-        public IEnumerable<ImageModel> GetAll()
-        {
-            return _images;
-        }
+        public IEnumerable<ImageModel> GetAll() =>
+            _imageService.GetAll();
+
 
         [HttpGet("{id}")]
-        public ImageModel Get(long id)
-        {
-            var image = _images.FirstOrDefault(x => x.Id == id);
-
-            if (image == null)
-            {
-                throw new ArgumentException("Нет такого изображения");
-            }
-
-            return image;
-        }
-
-        private void FillImages()
-        {
-            _images = new List<ImageModel>
-            {
-                new ImageModel {Id = 1, ImageName = "FirstImage", ImagePath = "FirstPath"},
-                new ImageModel {Id = 2, ImageName = "SecondImage", ImagePath = "SecondPath"},
-                new ImageModel {Id = 3, ImageName = "ThirdImage", ImagePath = "ThirdPath"},
-                new ImageModel {Id = 4, ImageName = "FourthImage", ImagePath = "FourthPath"},
-                new ImageModel {Id = 5, ImageName = "FifthImage", ImagePath = "FifthPath"}
-            };
-        }
+        public ImageModel Get(long id) =>
+            _imageService.Get(id);
     }
 }

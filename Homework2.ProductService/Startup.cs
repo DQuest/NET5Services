@@ -1,18 +1,15 @@
-namespace Homework2
-{
-    using Homework2.Controllers;
-    using Homework2.ImageService.Controllers;
-    using Homework2.ImageService.Interfaces;
-    using Homework2.Interfaces;
-    using Homework2.PriceService.Controllers;
-    using Homework2.PriceService.Interfaces;
-    using Microsoft.AspNetCore.Builder;
-    using Microsoft.AspNetCore.Hosting;
-    using Microsoft.Extensions.Configuration;
-    using Microsoft.Extensions.DependencyInjection;
-    using Microsoft.Extensions.Hosting;
-    using Microsoft.OpenApi.Models;
+using Homework2.ImageService.Interfaces;
+using Homework2.PriceService.Interfaces;
+using Homework2.ProductService.Interfaces;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
 
+namespace Homework2.ProductService
+{
     public class Startup
     {
         public Startup(IConfiguration configuration)
@@ -31,9 +28,9 @@ namespace Homework2
                 c.SwaggerDoc("v1", new OpenApiInfo {Title = "Homework2.ProductService", Version = "v1"});
             });
 
-            services.AddScoped<IImageController, ImageController>();
-            services.AddScoped<IPriceController, PriceController>();
-            services.AddScoped<IProductController, ProductController>();
+            services.AddScoped<IImageService, ImageService.Services.ImageService>();
+            services.AddScoped<IPriceService, PriceService.Services.PriceService>();
+            services.AddScoped<IProductService, ProductService.Services.ProductService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

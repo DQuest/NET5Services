@@ -1,14 +1,13 @@
+using Homework2.ImageService.Interfaces;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
+
 namespace Homework2.ImageService
 {
-    using Homework2.ImageService.Controllers;
-    using Homework2.ImageService.Interfaces;
-    using Microsoft.AspNetCore.Builder;
-    using Microsoft.AspNetCore.Hosting;
-    using Microsoft.Extensions.Configuration;
-    using Microsoft.Extensions.DependencyInjection;
-    using Microsoft.Extensions.Hosting;
-    using Microsoft.OpenApi.Models;
-
     public class Startup
     {
         public Startup(IConfiguration configuration)
@@ -26,6 +25,8 @@ namespace Homework2.ImageService
             {
                 c.SwaggerDoc("v1", new OpenApiInfo {Title = "Homework2.ImageService", Version = "v1"});
             });
+
+            services.AddScoped<IImageService, Services.ImageService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
