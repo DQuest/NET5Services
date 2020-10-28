@@ -7,7 +7,7 @@
     using Homework2.Services.PriceService;
     using Microsoft.AspNetCore.Mvc;
 
-    [Route("product")]
+    [Route("api/products")]
     public class ProductController : Controller, IProductController
     {
         private IEnumerable<ProductModel> _products;
