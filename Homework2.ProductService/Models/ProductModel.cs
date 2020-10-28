@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Homework2.ImageService.Models;
 using Homework2.PriceService.Models;
 
 namespace Homework2.ProductService.Models
