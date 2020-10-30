@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Homework2.ImageService.Interfaces;
 using Homework2.ImageService.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Homework2.ImageService.Controllers
 {
+    [ApiController]
     [Route("api/images")]
     public class ImageController : Controller
     {
@@ -16,15 +18,15 @@ namespace Homework2.ImageService.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<ImageModel> GetAll()
+        public async Task<IEnumerable<ImageModel>> GetAll()
         {
-            return _imageService.GetAll();
+            return await Task.Run(() => _imageService.GetAll());
         }
 
         [HttpGet("{id}")]
-        public ImageModel Get(long id)
+        public async Task<ImageModel> Get(long id)
         {
-            return _imageService.Get(id);
+            return await Task.Run(() => _imageService.Get(id));
         }
     }
 }

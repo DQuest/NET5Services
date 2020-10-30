@@ -47,22 +47,22 @@ namespace Homework2.ProductService.Services
                 {
                     Id = 1,
                     Name = "FirstProduct",
-                    Images = _imageClient.GetAll().Where(x => x.Id == 1 || x.Id == 2),
-                    Prices = _priceClient.GetAll().Where(x => x.Id == 1 || x.Id == 2)
+                    Images = _imageClient.GetAll().Result.Where(x => x.Id == 1 || x.Id == 2),
+                    Prices = _priceClient.GetAll().Result.Where(x => x.Id == 1 || x.Id == 2)
                 },
                 new ProductModel
                 {
                     Id = 2,
                     Name = "SecondProduct",
-                    Images = _imageClient.GetAll().Where(x => x.Id == 3 || x.Id == 4),
-                    Prices = _priceClient.GetAll().Where(x => x.Id == 3 || x.Id == 4)
+                    Images = _imageClient.GetAll().Result.Where(x => x.Id == 3 || x.Id == 4),
+                    Prices = _priceClient.GetAll().Result.Where(x => x.Id == 3 || x.Id == 4)
                 },
                 new ProductModel
                 {
                     Id = 3,
                     Name = "ThirdProduct",
-                    Images = _imageClient.GetAll().Where(x => x.Id == 5),
-                    Prices = _priceClient.GetAll().Where(x => x.Id == 5)
+                    Images = _imageClient.GetAll().Result.Where(x => x.Id == 5),
+                    Prices = _priceClient.GetAll().Result.Where(x => x.Id == 5)
                 }
             };
         }

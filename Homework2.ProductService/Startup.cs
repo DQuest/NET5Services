@@ -50,13 +50,16 @@ namespace Homework2.ProductService
                     })
             };
 
-            var client = new HttpClient
+            services.TryAddTransient(_ => RestService.For<IImageClient>(new HttpClient
             {
-                BaseAddress = new Uri("https://localhost:5001")
-            };
+                BaseAddress = new Uri("https://localhost:5003")
+            }, refitSettings));
 
-            services.TryAddTransient(_ => RestService.For<IImageClient>(client, refitSettings));
-            services.TryAddTransient(_ => RestService.For<IPriceClient>(client, refitSettings));
+            services.TryAddTransient(_ => RestService.For<IPriceClient>(new HttpClient
+            {
+                BaseAddress = new Uri("https://localhost:5005")
+            }, refitSettings));
+
             services.AddScoped<IProductService, ProductService.Services.ProductService>();
         }
 
