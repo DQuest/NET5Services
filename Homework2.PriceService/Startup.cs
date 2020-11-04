@@ -1,4 +1,5 @@
 using Homework2.PriceService.Interfaces;
+using Homework2.PriceService.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -27,6 +28,7 @@ namespace Homework2.PriceService
             });
 
             services.AddScoped<IPriceService, Services.PriceService>();
+            services.AddPriceDbOptions(Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
