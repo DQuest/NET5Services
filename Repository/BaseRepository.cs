@@ -7,6 +7,7 @@ using Microsoft.Extensions.Options;
 
 namespace Repository
 {
+    // ToDo переделать [Price] под обобщение
     public class BaseRepository<T> : IBaseRepository<T>
         where T: BaseEntity
     {
@@ -18,59 +19,90 @@ namespace Repository
             _dbOptions = dbOptions;
             _connectionString = _dbOptions.Value.ConnectionString;
         }
-        
-        public virtual async Task<T> GetById(Guid id)
-        {
-            await using var db = await GetSqlConnection();
-            return await db.QueryFirstOrDefaultAsync<T>(
-                $"SELECT * FROM [{typeof(T).Name}] WHERE [Id] = @Id AND [IsDeleted] = 0", new { id });
-        }
 
         public virtual async Task<IEnumerable<T>> GetAll()
         {
             await using var db = await GetSqlConnection();
-            return await db.QueryAsync<T>($"SELECT * FROM [{typeof(T).Name}] WHERE [IsDeleted] = 0");
+            return await db.QueryAsync<T>($"SELECT * FROM [Price] WHERE [IsDeleted] = 0");
         }
 
-        public Task<T> Create(T entity)
+        public virtual async Task<T> GetById(Guid id)
         {
-            throw new NotImplementedException();
+            await using var db = await GetSqlConnection();
+            return await db.QueryFirstOrDefaultAsync<T>(
+                $"SELECT * FROM [Price] WHERE [Id] = @Id AND [IsDeleted] = 0", new {Id = id});
         }
 
-        public Task<IEnumerable<T>> CreateMany(IEnumerable<T> entities)
+        public virtual async Task Create(T entity)
         {
-            throw new NotImplementedException();
+            await using var db = await GetSqlConnection();
+            await db.ExecuteAsync($"INSERT INTO [Price]", new {entity});
         }
 
-        public Task<bool> Update(T entity)
+        public virtual async Task Update(T entity)
         {
-            throw new NotImplementedException();
+            await using var db = await GetSqlConnection();
+            await db.ExecuteAsync($"UPDATE [Price] SET", entity);
+        }
+        public virtual async Task Delete(Guid id)
+        {
+            await using var db = await GetSqlConnection();
+            await db.ExecuteAsync($"UPDATE [Price] SET [IsDeleted] = 1 WHERE [Id] = @Id", new {Id = id});
         }
 
-        public Task<bool> UpdateMany(IEnumerable<T> entities)
+        #region подумать над "оптимизацией"
+
+        public virtual async Task CreateMany(IEnumerable<T> entities)
         {
-            throw new NotImplementedException();
+            await using var db = await GetSqlConnection();
+            
+            // todo переделать на транзакцию ?
+            // некрасиво спамить запросами БД...
+            foreach (var entity in entities)
+            {
+                await db.ExecuteAsync($"INSERT INTO [Price]", entity);
+            }
         }
 
-        public Task<bool> Delete(Guid id)
+        public virtual async Task UpdateMany(IEnumerable<T> entities)
         {
-            throw new NotImplementedException();
+            await using var db = await GetSqlConnection();
+            
+            // todo переделать на транзакцию ?
+            // некрасиво спамить запросами БД...
+            foreach (var entity in entities)
+            {
+                await db.ExecuteAsync($"UPDATE [Price] SET", entity);
+            }
         }
 
-        public Task<bool> DeleteMany(IEnumerable<Guid> id)
+        public virtual async Task DeleteMany(IEnumerable<Guid> ids)
         {
-            throw new NotImplementedException();
+            await using var db = await GetSqlConnection();
+
+            // todo переделать на транзакцию ?
+            // некрасиво спамить запросами БД...
+            foreach (var id in ids)
+            {
+                await db.ExecuteAsync($"UPDATE [Price] SET [IsDeleted] = 1 WHERE [Id] = @Id", new {Id = id});
+            }
         }
 
-        public Task<bool> Restore(Guid id)
-        {
-            throw new NotImplementedException();
-        }
+        #endregion
 
-        public Task<bool> RestoreMany(IEnumerable<Guid> id)
-        {
-            throw new NotImplementedException();
-        }
+        #region шта ?
+
+        // public virtual async Task<bool> Restore(Guid id)
+        // {
+        //     await using var db = await GetSqlConnection();
+        // }
+        //
+        // public virtual async Task<bool> RestoreMany(IEnumerable<Guid> id)
+        // {
+        //     await using var db = await GetSqlConnection();
+        // }
+
+        #endregion
 
         protected async Task<SqlConnection> GetSqlConnection()
         {
