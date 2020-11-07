@@ -1,6 +1,10 @@
+using AutoMapper;
+using Homework2.ImageService.Entities;
 using Homework2.ImageService.Interfaces;
+using Homework2.ImageService.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -25,8 +29,11 @@ namespace Homework2.ImageService
             {
                 c.SwaggerDoc("v1", new OpenApiInfo {Title = "Homework2.ImageService", Version = "v1"});
             });
-
-            services.AddScoped<IImageService, Services.ImageService>();
+            
+            var connectionString = Configuration.GetConnectionString("Image");
+            services.AddDbContext<ImageContext>(options => options.UseSqlServer(connectionString));
+            services.AddTransient<IImageService, Services.ImageService>();
+            services.AddAutoMapper(typeof(Startup));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

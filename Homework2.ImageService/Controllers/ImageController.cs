@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using AutoMapper;
+using Homework2.ImageService.Entities;
 using Homework2.ImageService.Interfaces;
 using Homework2.ImageService.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -11,22 +13,19 @@ namespace Homework2.ImageService.Controllers
     public class ImageController : Controller
     {
         private readonly IImageService _imageService;
+        private readonly IMapper _mapper;
 
-        public ImageController(IImageService imageService)
+        public ImageController(IImageService imageService, IMapper mapper)
         {
             _imageService = imageService;
+            _mapper = mapper;
         }
 
         [HttpGet]
         public async Task<IEnumerable<ImageModel>> GetAll()
         {
-            return await Task.Run(() => _imageService.GetAll());
-        }
-
-        [HttpGet("{id}")]
-        public async Task<ImageModel> Get(long id)
-        {
-            return await Task.Run(() => _imageService.Get(id));
+            var imageEntity = await _imageService.GetAll();
+            return _mapper.Map<IEnumerable<ImageModel>>(imageEntity);
         }
     }
 }
