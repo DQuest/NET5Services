@@ -1,17 +1,13 @@
-﻿namespace Homework2.ImageService.Models
+﻿using System;
+
+namespace Homework2.ImageService.Models
 {
     public class ImageModel
     {
-        public long Id { get; set; }
+        public Guid Id { get; set; }
 
-        /// <summary>
-        /// Наименование изображения.
-        /// </summary>
-        public string ImageName { get; set; }
+        public Guid ProductId { get; set; }
 
-        /// <summary>
-        /// Путь до изображения в файловом хранилище.
-        /// </summary>
-        public string ImagePath { get; set; }
+        public string Url { get; set; }
     }
 }

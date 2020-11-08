@@ -1,23 +1,32 @@
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Dapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 
 namespace Repository
 {
     // ToDo переделать [Price] под обобщение
     public class BaseRepository<T> : IBaseRepository<T>
-        where T: BaseEntity
+        where T : BaseEntity
     {
-        public readonly IOptions<DbOptions> _dbOptions;
         public readonly string _connectionString;
+        public readonly string _tableName;
+        public readonly IOptions<DbOptions> _dbOptions;
 
-        public BaseRepository(IOptions<DbOptions> dbOptions)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+
+        public BaseRepository(IOptions<DbOptions> dbOptions, IHttpContextAccessor httpContextAccessor, string tableName)
         {
-            _dbOptions = dbOptions;
             _connectionString = _dbOptions.Value.ConnectionString;
+            _tableName = tableName;
+            _dbOptions = dbOptions;
+
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public virtual async Task<IEnumerable<T>> GetAll()
@@ -35,44 +44,117 @@ namespace Repository
 
         public virtual async Task Create(T entity)
         {
-            await using var db = await GetSqlConnection();
-            await db.ExecuteAsync($"INSERT INTO [Price]", new {entity});
+            try
+            {
+                await using var db = await GetSqlConnection();
+
+                if (entity.Id == Guid.Empty)
+                {
+                    entity.Id = Guid.NewGuid();
+                }
+
+                entity.CreatedDate = DateTime.UtcNow;
+                entity.LastSavedDate = DateTime.UtcNow;
+
+                if (Guid.TryParse(_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier),
+                    out var userId))
+                {
+                    entity.CreatedBy = userId;
+                    entity.LastSavedBy = userId;
+                }
+
+                var fields = string.Join(", ", typeof(T).GetProperties().Select(prop => $"[{prop.Name}]"));
+                var values = string.Join(", ", typeof(T).GetProperties().Select(prop => $"@{prop.Name}"));
+
+                await db.ExecuteAsync($"INSERT INTO [{_tableName}] ({fields}) VALUES ({values})", entity);
+            }
+            catch (SqlException ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
         public virtual async Task Update(T entity)
         {
-            await using var db = await GetSqlConnection();
-            await db.ExecuteAsync($"UPDATE [Price] SET", entity);
+            try
+            {
+                await using var db = await GetSqlConnection();
+
+                entity.LastSavedDate = DateTime.UtcNow;
+
+                if (Guid.TryParse(_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier),
+                    out var userId))
+                {
+                    entity.LastSavedBy = userId;
+                }
+
+                var notUpdateFields = new[] {"Id", "CreatedDate", "CreatedBy", "IsDeleted"};
+                var parameters = string.Join(", ",
+                    typeof(T).GetProperties().Where(prop => !notUpdateFields.Contains(prop.Name))
+                        .Select(prop => $"{prop.Name} = @{prop.Name}"));
+
+                await db.ExecuteAsync($"UPDATE [{_tableName}] SET ({parameters}) WHERE [Id] = @Id", entity);
+            }
+            catch (SqlException ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
+
         public virtual async Task Delete(Guid id)
         {
             await using var db = await GetSqlConnection();
             await db.ExecuteAsync($"UPDATE [Price] SET [IsDeleted] = 1 WHERE [Id] = @Id", new {Id = id});
         }
 
-        #region подумать над "оптимизацией"
-
         public virtual async Task CreateMany(IEnumerable<T> entities)
         {
             await using var db = await GetSqlConnection();
-            
-            // todo переделать на транзакцию ?
-            // некрасиво спамить запросами БД...
+
             foreach (var entity in entities)
             {
-                await db.ExecuteAsync($"INSERT INTO [Price]", entity);
+                if (entity.Id == Guid.Empty)
+                {
+                    entity.Id = Guid.NewGuid();
+                }
+
+                entity.CreatedDate = DateTime.UtcNow;
+                entity.LastSavedDate = DateTime.UtcNow;
+
+                if (Guid.TryParse(_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier),
+                    out var userId))
+                {
+                    entity.CreatedBy = userId;
+                    entity.LastSavedBy = userId;
+                }
+
+                var fields = string.Join(", ", typeof(T).GetProperties().Select(prop => $"[{prop.Name}]"));
+                var values = string.Join(", ", typeof(T).GetProperties().Select(prop => $"@{prop.Name}"));
+
+                await db.ExecuteAsync($"INSERT INTO [{_tableName}] ({fields}) VALUES ({values})", entities);
             }
         }
 
         public virtual async Task UpdateMany(IEnumerable<T> entities)
         {
             await using var db = await GetSqlConnection();
-            
-            // todo переделать на транзакцию ?
-            // некрасиво спамить запросами БД...
+
             foreach (var entity in entities)
             {
-                await db.ExecuteAsync($"UPDATE [Price] SET", entity);
+                entity.LastSavedDate = DateTime.UtcNow;
+
+                if (Guid.TryParse(_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier),
+                    out var userId))
+                {
+                    entity.LastSavedBy = userId;
+                }
+
+                var notUpdateFields = new[] {"Id", "CreatedDate", "CreatedBy", "IsDeleted"};
+                var parameters = string.Join(", ",
+                    typeof(T).GetProperties().Where(prop => !notUpdateFields.Contains(prop.Name))
+                        .Select(prop => $"{prop.Name} = @{prop.Name}"));
+
+                await db.ExecuteAsync($"UPDATE [{_tableName}] SET ({parameters}) WHERE [Id] = @Id", entities);
             }
         }
 
@@ -80,29 +162,11 @@ namespace Repository
         {
             await using var db = await GetSqlConnection();
 
-            // todo переделать на транзакцию ?
-            // некрасиво спамить запросами БД...
             foreach (var id in ids)
             {
-                await db.ExecuteAsync($"UPDATE [Price] SET [IsDeleted] = 1 WHERE [Id] = @Id", new {Id = id});
+                await db.ExecuteAsync($"UPDATE [{_tableName}] SET [IsDeleted] = 1 WHERE [Id] = @Id", new {Id = id});
             }
         }
-
-        #endregion
-
-        #region шта ?
-
-        // public virtual async Task<bool> Restore(Guid id)
-        // {
-        //     await using var db = await GetSqlConnection();
-        // }
-        //
-        // public virtual async Task<bool> RestoreMany(IEnumerable<Guid> id)
-        // {
-        //     await using var db = await GetSqlConnection();
-        // }
-
-        #endregion
 
         protected async Task<SqlConnection> GetSqlConnection()
         {
