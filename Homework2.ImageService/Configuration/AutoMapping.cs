@@ -9,6 +9,7 @@ namespace Homework2.ImageService.Configuration
         public AutoMapping()
         {
             CreateMap<ImageEntity, ImageModel>();
+            CreateMap<ImageModel, ImageEntity>();
         }
     }
 }

@@ -1,4 +1,5 @@
 using AutoMapper;
+using Homework2.ImageService.Configuration;
 using Homework2.ImageService.Entities;
 using Homework2.ImageService.Interfaces;
 using Homework2.ImageService.Services;
@@ -31,6 +32,14 @@ namespace Homework2.ImageService
             });
 
             services.AddAutoMapper(typeof(Startup));
+
+            var mapperConfig = new MapperConfiguration(config =>
+            {
+                config.AddProfile(new AutoMapping());
+            });
+
+            var mapper = mapperConfig.CreateMapper();
+            services.AddSingleton(mapper);
 
             var connectionString = Configuration.GetConnectionString("Image");
             services.AddDbContext<ImageContext>(options => options.UseSqlServer(connectionString));

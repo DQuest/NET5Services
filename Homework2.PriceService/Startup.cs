@@ -1,3 +1,5 @@
+using AutoMapper;
+using Homework2.PriceService.Configuration;
 using Homework2.PriceService.Interfaces;
 using Homework2.PriceService.Models;
 using Homework2.PriceService.Repositories;
@@ -29,7 +31,17 @@ namespace Homework2.PriceService
                 c.SwaggerDoc("v1", new OpenApiInfo {Title = "Homework2.PriceService", Version = "v1"});
             });
 
-            services.AddScoped<IPriceService, Services.PriceService>();
+            services.AddAutoMapper(typeof(Startup));
+
+            var mapperConfig = new MapperConfiguration(config =>
+            {
+                config.AddProfile(new AutoMapping());
+            });
+
+            var mapper = mapperConfig.CreateMapper();
+            services.AddSingleton(mapper);
+
+            services.AddScoped<IPriceRepository, PriceRepository>();
             services.AddPriceDbOptions(Configuration);
         }
 

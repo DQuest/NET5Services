@@ -13,12 +13,10 @@ namespace Homework2.ImageService.Services
     public class ImageService : IImageService
     {
         private readonly ImageContext _imageContext;
-        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public ImageService(ImageContext imageContext, IHttpContextAccessor httpContextAccessor)
+        public ImageService(ImageContext imageContext)
         {
             _imageContext = imageContext;
-            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<IEnumerable<ImageEntity>> GetAll()
@@ -33,6 +31,7 @@ namespace Homework2.ImageService.Services
 
         public async Task Create(ImageEntity entity)
         {
+            // Guid.Empty - "00000000-0000-0000-0000-000000000000"
             if (entity.Id == Guid.Empty)
             {
                 entity.Id = Guid.NewGuid();
@@ -41,12 +40,12 @@ namespace Homework2.ImageService.Services
             entity.CreatedDate = DateTime.UtcNow;
             entity.LastSavedDate = DateTime.UtcNow;
 
-            if (Guid.TryParse(_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier),
-                out var userId))
-            {
-                entity.CreatedBy = userId;
-                entity.LastSavedBy = userId;
-            }
+            // if (Guid.TryParse(_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier),
+            //     out var userId))
+            // {
+            //     entity.CreatedBy = userId;
+            //     entity.LastSavedBy = userId;
+            // }
             
             await _imageContext.Image.AddAsync(entity);
             await _imageContext.SaveChangesAsync();
@@ -56,11 +55,11 @@ namespace Homework2.ImageService.Services
         {
             entity.LastSavedDate = DateTime.UtcNow;
 
-            if (Guid.TryParse(_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier),
-                out var userId))
-            {
-                entity.LastSavedBy = userId;
-            }
+            // if (Guid.TryParse(_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier),
+            //     out var userId))
+            // {
+            //     entity.LastSavedBy = userId;
+            // }
             
             _imageContext.Image.Update(entity);
             await _imageContext.SaveChangesAsync();
