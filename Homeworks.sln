@@ -10,6 +10,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Homework2.ImageService", "H
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Repository", "Repository\Repository.csproj", "{AE947D93-6D4B-4575-9F9C-EEDDD4F3875F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Homework3.WebUI", "Homework3.WebUI\Homework3.WebUI.csproj", "{A619CB31-8E05-4B74-AD6E-03C638020A1F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,5 +38,9 @@ Global
 		{AE947D93-6D4B-4575-9F9C-EEDDD4F3875F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AE947D93-6D4B-4575-9F9C-EEDDD4F3875F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AE947D93-6D4B-4575-9F9C-EEDDD4F3875F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A619CB31-8E05-4B74-AD6E-03C638020A1F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A619CB31-8E05-4B74-AD6E-03C638020A1F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A619CB31-8E05-4B74-AD6E-03C638020A1F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A619CB31-8E05-4B74-AD6E-03C638020A1F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
