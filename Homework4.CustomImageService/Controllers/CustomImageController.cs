@@ -26,9 +26,9 @@ namespace Homework4.CustomImageService.Controllers
         }
 
         [HttpPost]
-        public async Task Send()
+        public async Task Upload(string imageUrl)
         {
-            await _customImageService.Post();
+            await _customImageService.Upload(imageUrl);
         }
     }
 }

@@ -6,8 +6,16 @@ namespace Homework4.CustomImageService.Interfaces
 {
     public interface ICustomImageService
     {
+        /// <summary>
+        /// Получить список изображений.
+        /// </summary>
+        /// <returns></returns>
         Task<IEnumerable<ImageModel>> GetAll();
 
-        Task Post();
+        /// <summary>
+        /// Загрузить файл в Диск по URL.
+        /// </summary>
+        /// <returns></returns>
+        Task Upload(string imageUrl);
     }
 }
