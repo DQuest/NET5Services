@@ -49,7 +49,7 @@ namespace Homework4.CustomImageService.Services
         {
             try
             {
-                // 
+                // todo сделать разбивку
                 var regex = new Regex(@"/[\w-]+\.(jpg|png|jpeg|bmp|gif)/g");
                 var imageName = regex.Split(imageUrl);
                 var fullPath = $"CustomImageFolder/{imageName}";
