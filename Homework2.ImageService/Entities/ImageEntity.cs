@@ -10,6 +10,8 @@ namespace Homework2.ImageService.Entities
 
         public string Url { get; set; }
 
+        public string FullPathOnDisk { get; set; }
+
         public DateTime CreatedDate { get; set; }
 
         public Guid CreatedBy { get; set; }

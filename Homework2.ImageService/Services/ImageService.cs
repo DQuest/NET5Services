@@ -13,10 +13,12 @@ namespace Homework2.ImageService.Services
     public class ImageService : IImageService
     {
         private readonly ImageContext _imageContext;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public ImageService(ImageContext imageContext)
+        public ImageService(ImageContext imageContext, IHttpContextAccessor httpContextAccessor)
         {
-            _imageContext = imageContext;
+            _imageContext = imageContext ?? throw new ArgumentException(nameof(imageContext));
+            _httpContextAccessor = httpContextAccessor ?? throw new ArgumentException(nameof(httpContextAccessor));
         }
 
         public async Task<IEnumerable<ImageEntity>> GetAll()
@@ -26,7 +28,14 @@ namespace Homework2.ImageService.Services
 
         public async Task<ImageEntity> Get(Guid id)
         {
-            return await _imageContext.Image.FirstOrDefaultAsync(x => x.Id == id);
+            var image = await _imageContext.Image.FirstOrDefaultAsync(x => x.Id == id);
+
+            if (image == null)
+            {
+                throw new ArgumentException($"Изображение с идентификатором {id} не найдено в БД.");
+            }
+
+            return image;
         }
 
         public async Task Create(ImageEntity entity)
@@ -40,13 +49,13 @@ namespace Homework2.ImageService.Services
             entity.CreatedDate = DateTime.UtcNow;
             entity.LastSavedDate = DateTime.UtcNow;
 
-            // if (Guid.TryParse(_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier),
-            //     out var userId))
-            // {
-            //     entity.CreatedBy = userId;
-            //     entity.LastSavedBy = userId;
-            // }
-            
+            if (Guid.TryParse(_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier),
+                out var userId))
+            {
+                entity.CreatedBy = userId;
+                entity.LastSavedBy = userId;
+            }
+
             await _imageContext.Image.AddAsync(entity);
             await _imageContext.SaveChangesAsync();
         }
@@ -55,12 +64,12 @@ namespace Homework2.ImageService.Services
         {
             entity.LastSavedDate = DateTime.UtcNow;
 
-            // if (Guid.TryParse(_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier),
-            //     out var userId))
-            // {
-            //     entity.LastSavedBy = userId;
-            // }
-            
+            if (Guid.TryParse(_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier),
+                out var userId))
+            {
+                entity.LastSavedBy = userId;
+            }
+
             _imageContext.Image.Update(entity);
             await _imageContext.SaveChangesAsync();
         }
@@ -69,11 +78,19 @@ namespace Homework2.ImageService.Services
         {
             var imageEntity = await _imageContext.Image.FirstOrDefaultAsync(x => x.Id == id);
 
-            if (imageEntity != null)
+            if (imageEntity == null)
             {
-                _imageContext.Image.Remove(imageEntity);
-                await _imageContext.SaveChangesAsync();
+                throw new ArgumentException($"Не найдено изображение с {id} в БД");
             }
+
+            if (Guid.TryParse(_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier),
+                out var userId))
+            {
+                imageEntity.LastSavedBy = userId;
+            }
+
+            _imageContext.Image.Remove(imageEntity);
+            await _imageContext.SaveChangesAsync();
         }
     }
 }

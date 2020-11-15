@@ -25,6 +25,18 @@ namespace Homework4.CustomImageService.Controllers
             return await _customImageService.GetAll();
         }
 
+        [HttpGet("GetImageMetaInfo/{id}")]
+        public async Task<ImageModel> GetImageMetaInfo(Guid id)
+        {
+            return await _customImageService.GetImageMetaInfo(id);
+        }
+
+        [HttpGet("GetImageUrl/{id}")]
+        public async Task<string> GetImageUrl(Guid id)
+        {
+            return await _customImageService.GetImageUrl(id);
+        }
+
         [HttpPost]
         public async Task Upload(string imageUrl)
         {

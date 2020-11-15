@@ -5,9 +5,11 @@ using Homework2.ImageService.Interfaces;
 using Homework2.ImageService.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 
@@ -44,6 +46,7 @@ namespace Homework2.ImageService
             var connectionString = Configuration.GetConnectionString("Image");
             services.AddDbContext<ImageContext>(options => options.UseSqlServer(connectionString));
             services.AddTransient<IImageService, Services.ImageService>();
+            services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

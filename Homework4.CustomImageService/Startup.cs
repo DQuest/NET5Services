@@ -39,7 +39,8 @@ namespace Homework4.CustomImageService
             });
 
             var refitSettings = GetRefitSettings();
-            services.TryAddTransient(ImplementationFactory<ICustomImageClient>(refitSettings, "https://cloud-api.yandex.net"));
+            services.TryAddTransient(ImplementationFactory<IYandexDriveImageClient>(refitSettings, "https://cloud-api.yandex.net"));
+            services.TryAddTransient(ImplementationFactory<IImageDbClient>(refitSettings, "https://localhost:5003"));
 
             services.AddTransient<ICustomImageService, Services.CustomImageService>();
         }
@@ -65,7 +66,7 @@ namespace Homework4.CustomImageService
 
         private RefitSettings GetRefitSettings()
         {
-            return new RefitSettings()
+            return new()
             {
                 ContentSerializer = new NewtonsoftJsonContentSerializer(
                     new JsonSerializerSettings

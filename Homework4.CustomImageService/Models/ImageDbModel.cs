@@ -1,8 +1,8 @@
-﻿using System;
+using System;
 
-namespace Homework2.ImageService.Models
+namespace Homework4.CustomImageService.Models
 {
-    public class ImageModel
+    public class ImageDbModel
     {
         public Guid Id { get; set; }
 
