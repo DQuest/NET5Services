@@ -40,6 +40,8 @@ namespace Homework2.ProductService
                 options.SerializerSettings.DefaultValueHandling = DefaultValueHandling.Ignore;
             });
 
+            services.AddEntityFrameworkNpgsql().AddDbContext<ProductContext>();
+
             var refitSettings = new RefitSettings
             {
                 ContentSerializer = new NewtonsoftJsonContentSerializer(
@@ -50,17 +52,18 @@ namespace Homework2.ProductService
                     })
             };
 
-            services.TryAddTransient(_ => RestService.For<IImageClient>(new HttpClient
-            {
-                BaseAddress = new Uri("https://localhost:5003")
-            }, refitSettings));
-
-            services.TryAddTransient(_ => RestService.For<IPriceClient>(new HttpClient
-            {
-                BaseAddress = new Uri("https://localhost:5005")
-            }, refitSettings));
+            services.TryAddTransient(ImplementationFactory<IImageClient>(refitSettings, "https://localhost:5003"));
+            services.TryAddTransient(ImplementationFactory<IPriceClient>(refitSettings,"https://localhost:5005"));
 
             services.AddScoped<IProductService, ProductService.Services.ProductService>();
+        }
+
+        private Func<IServiceProvider, T> ImplementationFactory<T>(RefitSettings refitSettings, string uri)
+        {
+            return _ => RestService.For<T>(new HttpClient
+            {
+                BaseAddress = new Uri(uri)
+            }, refitSettings);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
