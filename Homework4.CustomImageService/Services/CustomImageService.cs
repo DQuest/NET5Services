@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Homework4.CustomImageService.Clients;
 using Homework4.CustomImageService.Interfaces;
 using Homework4.CustomImageService.Models;
-using Newtonsoft.Json;
+using Microsoft.Extensions.Configuration;
 
 namespace Homework4.CustomImageService.Services
 {
@@ -14,10 +14,13 @@ namespace Homework4.CustomImageService.Services
     /// </summary>
     public class CustomImageService : ICustomImageService
     {
+        private readonly string _token;
+
         private readonly ICustomImageClient _customImageClient;
 
-        public CustomImageService(ICustomImageClient customImageClient)
+        public CustomImageService(ICustomImageClient customImageClient, IConfiguration cfg)
         {
+            _token = cfg.GetValue<string>("YandexToken");
             _customImageClient = customImageClient ?? throw new ArgumentException(nameof(customImageClient));
         }
 
@@ -31,7 +34,7 @@ namespace Homework4.CustomImageService.Services
             try
             {
                 // Like JsonConvert.DeserializeObject<CustomImageModel> from string
-                var data = await _customImageClient.GetAll();
+                var data = await _customImageClient.GetAll(_token);
                 return data.Images;
             }
             catch (Exception ex)
@@ -53,7 +56,7 @@ namespace Homework4.CustomImageService.Services
                 var regex = new Regex(@"/[\w-]+\.(jpg|png|jpeg|bmp|gif)/g");
                 var imageName = regex.Split(imageUrl);
                 var fullPath = $"CustomImageFolder/{imageName}";
-                await _customImageClient.Upload(imageUrl, fullPath);
+                await _customImageClient.Upload(imageUrl, fullPath, _token);
             }
             catch (Exception ex)
             {

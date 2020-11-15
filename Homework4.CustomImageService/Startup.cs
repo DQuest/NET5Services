@@ -39,7 +39,7 @@ namespace Homework4.CustomImageService
             });
 
             var refitSettings = GetRefitSettings();
-            services.TryAddTransient(ImplementationFactory(refitSettings, "https://cloud-api.yandex.net"));
+            services.TryAddTransient(ImplementationFactory<ICustomImageClient>(refitSettings, "https://cloud-api.yandex.net"));
 
             services.AddTransient<ICustomImageService, Services.CustomImageService>();
         }
@@ -76,11 +76,11 @@ namespace Homework4.CustomImageService
             };
         }
         
-        private Func<IServiceProvider, ICustomImageClient> ImplementationFactory(
+        private Func<IServiceProvider, T> ImplementationFactory<T>(
             RefitSettings refitSettings,
             string uriAddress)
         {
-            return _ => RestService.For<ICustomImageClient>(new HttpClient
+            return _ => RestService.For<T>(new HttpClient
             {
                 BaseAddress = new Uri(uriAddress)
             }, refitSettings);
