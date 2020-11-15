@@ -52,16 +52,26 @@ namespace Homework4.CustomImageService.Services
         {
             try
             {
-                // todo сделать разбивку
-                var regex = new Regex(@"/[\w-]+\.(jpg|png|jpeg|bmp|gif)/g");
-                var imageName = regex.Split(imageUrl);
-                var fullPath = $"CustomImageFolder/{imageName}";
+                var fullPath = GetFullPathForImage(imageUrl);
                 await _customImageClient.Upload(imageUrl, fullPath, _token);
             }
             catch (Exception ex)
             {
                 throw new ArgumentException(ex.Message);
             }
+        }
+
+        private string GetFullPathForImage(string imageUrl)
+        {
+            var imgNameWithExtensionPattern = new Regex(@"[\w-]+\.(jpg|jpeg|png|bmp|gif)");
+            var imgNameWithExtension = imgNameWithExtensionPattern.Match(imageUrl).Value;
+
+            if (string.IsNullOrEmpty(imgNameWithExtension))
+            {
+                imgNameWithExtension = "image";
+            }
+
+            return $"CustomImageFolder/{imgNameWithExtension}";
         }
     }
 }
