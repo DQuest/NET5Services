@@ -1,18 +1,18 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Homework1", "Homework1\Homework1.csproj", "{2D4BFE32-1C7B-430A-A225-5C6F4A4E99F3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProductService", "ProductService\ProductService.csproj", "{261EEE75-0092-41E9-8CF5-873914CF204E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Homework2.ProductService", "Homework2.ProductService\Homework2.ProductService.csproj", "{261EEE75-0092-41E9-8CF5-873914CF204E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PriceService", "PriceService\PriceService.csproj", "{39D60B87-DC4E-44EF-8CEA-860E73D67167}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Homework2.PriceService", "Homework2.PriceService\Homework2.PriceService.csproj", "{39D60B87-DC4E-44EF-8CEA-860E73D67167}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Homework2.ImageService", "Homework2.ImageService\Homework2.ImageService.csproj", "{161B7BED-072D-43B8-8A69-3AF3553FC0E1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImageService", "ImageService\ImageService.csproj", "{161B7BED-072D-43B8-8A69-3AF3553FC0E1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Repository", "Repository\Repository.csproj", "{AE947D93-6D4B-4575-9F9C-EEDDD4F3875F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Homework3.WebUI", "Homework3.WebUI\Homework3.WebUI.csproj", "{A619CB31-8E05-4B74-AD6E-03C638020A1F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebUI", "WebUI\WebUI.csproj", "{A619CB31-8E05-4B74-AD6E-03C638020A1F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Homework4.CustomImageService", "Homework4.CustomImageService\Homework4.CustomImageService.csproj", "{F5B4ED63-458B-4069-8F09-94097A7C3D9A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomImageService", "CustomImageService\CustomImageService.csproj", "{F5B4ED63-458B-4069-8F09-94097A7C3D9A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthService", "AuthService\AuthService.csproj", "{59C65D35-E7DC-4300-A6F7-C99049DF21F2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -20,10 +20,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{2D4BFE32-1C7B-430A-A225-5C6F4A4E99F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2D4BFE32-1C7B-430A-A225-5C6F4A4E99F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2D4BFE32-1C7B-430A-A225-5C6F4A4E99F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2D4BFE32-1C7B-430A-A225-5C6F4A4E99F3}.Release|Any CPU.Build.0 = Release|Any CPU
 		{261EEE75-0092-41E9-8CF5-873914CF204E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{261EEE75-0092-41E9-8CF5-873914CF204E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{261EEE75-0092-41E9-8CF5-873914CF204E}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -48,5 +44,9 @@ Global
 		{F5B4ED63-458B-4069-8F09-94097A7C3D9A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F5B4ED63-458B-4069-8F09-94097A7C3D9A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F5B4ED63-458B-4069-8F09-94097A7C3D9A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{59C65D35-E7DC-4300-A6F7-C99049DF21F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{59C65D35-E7DC-4300-A6F7-C99049DF21F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{59C65D35-E7DC-4300-A6F7-C99049DF21F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{59C65D35-E7DC-4300-A6F7-C99049DF21F2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
