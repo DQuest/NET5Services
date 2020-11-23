@@ -1,4 +1,4 @@
-namespace AuthService.Models
+namespace AuthService.Models.Login
 {
     public class LoginResponse
     {

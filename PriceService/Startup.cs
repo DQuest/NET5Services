@@ -1,15 +1,15 @@
 using AutoMapper;
-using PriceService.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using PriceService.Configuration;
 using PriceService.Interfaces;
 using PriceService.Repositories;
-using Repository;
 
 namespace PriceService
 {
@@ -31,18 +31,11 @@ namespace PriceService
                 c.SwaggerDoc("v1", new OpenApiInfo {Title = "PriceService", Version = "v1"});
             });
 
-            services.AddAutoMapper(typeof(Startup));
-
-            var mapperConfig = new MapperConfiguration(config =>
-            {
-                config.AddProfile(new AutoMapping());
-            });
-
-            var mapper = mapperConfig.CreateMapper();
-            services.AddSingleton(mapper);
+            AddAutoMapper(services);
 
             services.AddScoped<IPriceRepository, PriceRepository>();
             services.AddPriceDbOptions(Configuration);
+            services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -62,6 +55,16 @@ namespace PriceService
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+        }
+
+        private void AddAutoMapper(IServiceCollection services)
+        {
+            services.AddAutoMapper(typeof(Startup));
+
+            var mapperConfig = new MapperConfiguration(config => { config.AddProfile(new AutoMapping()); });
+
+            var mapper = mapperConfig.CreateMapper();
+            services.AddSingleton(mapper);
         }
     }
 }

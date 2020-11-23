@@ -17,11 +17,14 @@ namespace Repository
         public readonly string _tableName;
         public readonly IOptions<DbOptions> _dbOptions;
 
-        public BaseRepository(IOptions<DbOptions> dbOptions, string tableName)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+
+        public BaseRepository(IOptions<DbOptions> dbOptions, string tableName, IHttpContextAccessor httpContextAccessor)
         {
             _connectionString = dbOptions.Value.ConnectionString;
             _tableName = tableName;
             _dbOptions = dbOptions;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public virtual async Task<IEnumerable<T>> GetAll()
@@ -43,23 +46,8 @@ namespace Repository
             {
                 await using var db = await GetSqlConnection();
 
-                if (entity.Id == Guid.Empty)
-                {
-                    entity.Id = Guid.NewGuid();
-                }
-
-                entity.CreatedDate = DateTime.UtcNow;
-                entity.LastSavedDate = DateTime.UtcNow;
-
-                // if (Guid.TryParse(_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier),
-                //     out var userId))
-                // {
-                //     entity.CreatedBy = userId;
-                //     entity.LastSavedBy = userId;
-                // }
-
-                var fields = string.Join(", ", typeof(T).GetProperties().Select(prop => $"[{prop.Name}]"));
-                var values = string.Join(", ", typeof(T).GetProperties().Select(prop => $"@{prop.Name}"));
+                FillBaseFields(entity);
+                var (fields, values) = FillDbStructureForCreate();
 
                 await db.ExecuteAsync($"INSERT INTO {_tableName} ({fields}) VALUES ({values})", entity);
             }
@@ -75,20 +63,10 @@ namespace Repository
             {
                 await using var db = await GetSqlConnection();
 
-                entity.LastSavedDate = DateTime.UtcNow;
+                FillBaseFields(entity, true);
 
-                // if (Guid.TryParse(_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier),
-                //     out var userId))
-                // {
-                //     entity.LastSavedBy = userId;
-                // }
+                var parameters = FillDbStructureForUpdate();
 
-                var notUpdateFields = new[] {"Id", "CreatedDate", "CreatedBy", "IsDeleted"};
-                var parameters = string.Join(", ",
-                    typeof(T).GetProperties().Where(prop => !notUpdateFields.Contains(prop.Name))
-                        .Select(prop => $"{prop.Name} = @{prop.Name}"));
-
-                // Todo не отрабатывает, разобраться
                 await db.ExecuteAsync($"UPDATE {_tableName} SET {parameters} WHERE [Id] = @Id", entity);
             }
             catch (SqlException ex)
@@ -109,23 +87,9 @@ namespace Repository
 
             foreach (var entity in entities)
             {
-                if (entity.Id == Guid.Empty)
-                {
-                    entity.Id = Guid.NewGuid();
-                }
+                FillBaseFields(entity);
 
-                entity.CreatedDate = DateTime.UtcNow;
-                entity.LastSavedDate = DateTime.UtcNow;
-
-                // if (Guid.TryParse(_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier),
-                //     out var userId))
-                // {
-                //     entity.CreatedBy = userId;
-                //     entity.LastSavedBy = userId;
-                // }
-
-                var fields = string.Join(", ", typeof(T).GetProperties().Select(prop => $"[{prop.Name}]"));
-                var values = string.Join(", ", typeof(T).GetProperties().Select(prop => $"@{prop.Name}"));
+                var (fields, values) = FillDbStructureForCreate();
 
                 await db.ExecuteAsync($"INSERT INTO {_tableName} ({fields}) VALUES ({values})", entities);
             }
@@ -137,18 +101,9 @@ namespace Repository
 
             foreach (var entity in entities)
             {
-                entity.LastSavedDate = DateTime.UtcNow;
+                FillBaseFields(entity, true);
 
-                // if (Guid.TryParse(_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier),
-                //     out var userId))
-                // {
-                //     entity.LastSavedBy = userId;
-                // }
-
-                var notUpdateFields = new[] {"Id", "CreatedDate", "CreatedBy", "IsDeleted"};
-                var parameters = string.Join(", ",
-                    typeof(T).GetProperties().Where(prop => !notUpdateFields.Contains(prop.Name))
-                        .Select(prop => $"{prop.Name} = @{prop.Name}"));
+                var parameters = FillDbStructureForUpdate();
 
                 await db.ExecuteAsync($"UPDATE {_tableName} SET {parameters} WHERE [Id] = @Id", entities);
             }
@@ -169,6 +124,48 @@ namespace Repository
             var db = new SqlConnection(_connectionString);
             db.Open();
             return db;
+        }
+        
+        private (string fields, string values) FillDbStructureForCreate()
+        {
+            var fields = string.Join(", ", typeof(T).GetProperties().Select(prop => $"[{prop.Name}]"));
+            var values = string.Join(", ", typeof(T).GetProperties().Select(prop => $"@{prop.Name}"));
+            return (fields, values);
+        }
+
+        private static string FillDbStructureForUpdate()
+        {
+            var notUpdateFields = new[] {"Id", "CreatedDate", "CreatedBy", "IsDeleted"};
+            return string.Join(", ",
+                typeof(T).GetProperties().Where(prop => !notUpdateFields.Contains(prop.Name))
+                    .Select(prop => $"{prop.Name} = @{prop.Name}"));
+        }
+
+        private void FillBaseFields(T entity, bool isUpdateOperation = false)
+        {
+            if (!isUpdateOperation)
+            {
+                if (entity.Id == Guid.Empty)
+                {
+                    entity.Id = Guid.NewGuid();
+                }
+
+                entity.CreatedDate = DateTime.UtcNow;
+            }
+
+            entity.LastSavedDate = DateTime.UtcNow;
+
+            if (Guid.TryParse(_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier),
+                out var userId))
+            {
+                if (!isUpdateOperation)
+                {
+                    entity.CreatedBy = userId;
+                }
+
+                entity.LastSavedBy = userId;
+            }
+            
         }
     }
 }

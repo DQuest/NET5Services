@@ -21,9 +21,5 @@ namespace Repository
         Task Delete(Guid id);
 
         Task DeleteMany(IEnumerable<Guid> id);
-
-        // Task<bool> Restore(Guid id);
-        //
-        // Task<bool> RestoreMany(IEnumerable<Guid> id);
     }
 }

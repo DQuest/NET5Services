@@ -1,4 +1,4 @@
-namespace AuthService.Models
+namespace AuthService.Models.SignUp
 {
     public class SignUpResponse
     {
