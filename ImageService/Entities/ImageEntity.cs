@@ -1,4 +1,5 @@
-using System;
+﻿using System;
+using Newtonsoft.Json;
 
 namespace ImageService.Entities
 {
@@ -8,9 +9,10 @@ namespace ImageService.Entities
 
         public Guid ProductId { get; set; }
 
-        public string Url { get; set; }
+        public string Name { get; set; }
 
-        public string FullPathOnDisk { get; set; }
+        [JsonProperty("preview")]
+        public string PreviewUrl { get; set; }
 
         public DateTime CreatedDate { get; set; }
 

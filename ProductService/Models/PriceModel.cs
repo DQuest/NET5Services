@@ -1,17 +1,15 @@
-﻿namespace ProductService.Models
+﻿using System;
+
+namespace ProductService.Models
 {
     public class PriceModel
     {
-        public long Id { get; set; }
+        public Guid Id { get; set; }
+        
+        public Guid ProductId { get; set; }
 
-        /// <summary>
-        /// Стандартная цена.
-        /// </summary>
         public decimal SellPrice { get; set; }
 
-        /// <summary>
-        /// Цена для распродажи.
-        /// </summary>
         public decimal DiscountPrice { get; set; }
     }
 }

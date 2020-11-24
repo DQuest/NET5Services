@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ProductService.Interfaces;
 using ProductService.Models;
@@ -15,12 +16,14 @@ namespace ProductService.Controllers
             _productService = productService;
         }
 
+        [Authorize]
         [HttpGet]
         public IEnumerable<ProductModel> GetAll()
         {
             return _productService.GetAll();
         }
 
+        [Authorize]
         [HttpGet("{id}")]
         public ProductModel Get(long id)
         {

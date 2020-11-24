@@ -23,45 +23,68 @@ namespace ImageService.Controllers
             _imageService = imageService;
         }
 
+        /// <summary>
+        /// Получение изображений-превьюшек для продукта.
+        /// </summary>
+        /// <param name="productId">Идентификатор продукта</param>
+        /// <returns></returns>
         [Authorize]
         [HttpGet]
-        public async Task<IEnumerable<ImageModel>> GetAll()
+        public async Task<IEnumerable<ImageModel>> GetAll(Guid productId)
         {
-            var imageEntity = await _imageService.GetAll();
-            return _mapper.Map<IEnumerable<ImageModel>>(imageEntity);
+            var imagesEntity = await _imageService.GetAll(productId);
+            return _mapper.Map<IEnumerable<ImageModel>>(imagesEntity);
         }
 
+        /// <summary>
+        /// Получение увеличенного изображения для продукта.
+        /// </summary>
+        /// <param name="imageId">Идентификатор изображения</param>
+        /// <returns></returns>
         [Authorize]
         [HttpGet("{id}")]
-        public async Task<ImageModel> Get(Guid id)
+        public async Task<ImageModel> Get(Guid imageId)
         {
-            var imageEntity = await _imageService.Get(id);
+            var imageEntity = await _imageService.Get(imageId);
             return _mapper.Map<ImageModel>(imageEntity);
         }
 
-        [Authorize]
+        /// <summary>
+        /// Добавление изображений для продукта.
+        /// </summary>
+        /// <param name="uploadImagesModel">Модель загрузки изображений для продукта</param>
+        /// <returns></returns>
+        [Authorize(Roles = "Admin")]
         [HttpPost]
-        public async Task Create(ImageModel image)
+        public async Task Create(UploadImagesModel uploadImagesModel)
         {
-            // Нужен ли маппинг в entity - модель ?
-            var imageEntity = _mapper.Map<ImageEntity>(image);
-            await _imageService.Create(imageEntity);
+            await _imageService.Create(uploadImagesModel); 
         }
 
-        [Authorize]
+        /// <summary>
+        /// Обновление информации об изображении.
+        /// </summary>
+        /// <param name="image"></param>
+        /// <returns></returns>
+        [Authorize(Roles = "Admin")]
         [HttpPut]
         public async Task Update(ImageModel image)
         {
-            // Нужен ли маппинг в entity - модель ?
             var imageEntity = _mapper.Map<ImageEntity>(image);
-            await _imageService.Update(imageEntity);
+            await _imageService.Update(imageEntity); 
         }
 
+        /// <summary>
+        /// Удаление изображений для продуктов.
+        /// </summary>
+        /// <param name="productsIds">Идентификаторы продуктов</param>
+        /// <returns></returns>
+        [Authorize(Roles = "Admin")]
         [Authorize]
         [HttpDelete("{id}")]
-        public async Task Delete(Guid id)
+        public async Task Delete(IEnumerable<Guid> productsIds)
         {
-            await _imageService.Delete(id);
+            await _imageService.Delete(productsIds);
         }
     }
 }

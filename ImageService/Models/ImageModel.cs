@@ -1,4 +1,5 @@
 ﻿using System;
+using Newtonsoft.Json;
 
 namespace ImageService.Models
 {
@@ -8,8 +9,9 @@ namespace ImageService.Models
 
         public Guid ProductId { get; set; }
 
-        public string Url { get; set; }
+        public string Name { get; set; }
 
-        public string FullPathOnDisk { get; set; }
+        [JsonProperty("preview")]
+        public string PreviewUrl { get; set; }
     }
 }

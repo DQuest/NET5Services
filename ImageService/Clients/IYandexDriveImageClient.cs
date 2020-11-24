@@ -1,9 +1,8 @@
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using CustomImageService.Models;
+using ImageService.Models;
 using Refit;
 
-namespace CustomImageService.Clients
+namespace ImageService.Clients
 {
     public interface IYandexDriveImageClient
     {
@@ -13,7 +12,7 @@ namespace CustomImageService.Clients
         /// <param name="authorization"></param>
         /// <returns></returns>
         [Get("/v1/disk/resources/files?media_type=image")]
-        Task<CustomImageModel> GetAll([Header("Authorization")] string authorization);
+        Task<ImageYandexModel> GetAll([Header("Authorization")] string authorization);
         
         /// <summary>
         /// Получить изображение с яндекс диска по указанному полному пути.
@@ -22,7 +21,7 @@ namespace CustomImageService.Clients
         /// <param name="authorization"></param>
         /// <returns></returns>
         [Get("/v1/disk/resources?path={fullPath}")]
-        Task<ImageModel> Get(string fullPath, [Header("Authorization")] string authorization);
+        Task<ImageYandexModel> Get(string fullPath, [Header("Authorization")] string authorization);
 
         /// <summary>
         /// Загрузить файл в Диск по URL.

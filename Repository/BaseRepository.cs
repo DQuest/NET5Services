@@ -155,7 +155,7 @@ namespace Repository
 
             entity.LastSavedDate = DateTime.UtcNow;
 
-            if (Guid.TryParse(_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier),
+            if (Guid.TryParse(_httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier),
                 out var userId))
             {
                 if (!isUpdateOperation)

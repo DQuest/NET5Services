@@ -1,5 +1,8 @@
+using System;
+using System.Net.Http;
 using System.Text;
 using AutoMapper;
+using ImageService.Clients;
 using ImageService.Configuration;
 using ImageService.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -13,6 +16,8 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json;
+using Refit;
 
 namespace ImageService
 {
@@ -37,6 +42,7 @@ namespace ImageService
             services.AddTransient<IImageService, Services.ImageService>();
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
+            SetupRefit(services);
             AddAutoMapper(services);
             AddAuthentication(services);
             AddDbContext(services);
@@ -59,6 +65,26 @@ namespace ImageService
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+        }
+        
+        private void SetupRefit(IServiceCollection services)
+        {
+            var refitSettings = GetRefitSettings();
+            services.TryAddTransient(
+                ImplementationFactory<IYandexDriveImageClient>(refitSettings, "https://cloud-api.yandex.net"));
+        }
+        
+        private RefitSettings GetRefitSettings()
+        {
+            return new()
+            {
+                ContentSerializer = new NewtonsoftJsonContentSerializer(
+                    new JsonSerializerSettings
+                    {
+                        DefaultValueHandling = DefaultValueHandling.Ignore,
+                        NullValueHandling = NullValueHandling.Ignore
+                    })
+            };
         }
         
         private void AddAuthentication(IServiceCollection services)
@@ -99,6 +125,16 @@ namespace ImageService
         {
             var connectionString = Configuration.GetConnectionString("Image");
             services.AddDbContext<ImageContext>(options => options.UseSqlServer(connectionString));
+        }
+
+        private Func<IServiceProvider, T> ImplementationFactory<T>(
+            RefitSettings refitSettings,
+            string uriAddress)
+        {
+            return _ => RestService.For<T>(new HttpClient
+            {
+                BaseAddress = new Uri(uriAddress)
+            }, refitSettings);
         }
     }
 }
