@@ -29,7 +29,7 @@ namespace AuthService.Controllers
         {
             return await _signUpService.SignUp(signUpModel);
         }
-        
+
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginModel loginModel)
         {

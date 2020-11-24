@@ -5,6 +5,7 @@ using AutoMapper;
 using ImageService.Entities;
 using ImageService.Interfaces;
 using ImageService.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ImageService.Controllers
@@ -22,6 +23,7 @@ namespace ImageService.Controllers
             _imageService = imageService;
         }
 
+        [Authorize]
         [HttpGet]
         public async Task<IEnumerable<ImageModel>> GetAll()
         {
@@ -29,6 +31,7 @@ namespace ImageService.Controllers
             return _mapper.Map<IEnumerable<ImageModel>>(imageEntity);
         }
 
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<ImageModel> Get(Guid id)
         {
@@ -36,6 +39,7 @@ namespace ImageService.Controllers
             return _mapper.Map<ImageModel>(imageEntity);
         }
 
+        [Authorize]
         [HttpPost]
         public async Task Create(ImageModel image)
         {
@@ -44,6 +48,7 @@ namespace ImageService.Controllers
             await _imageService.Create(imageEntity);
         }
 
+        [Authorize]
         [HttpPut]
         public async Task Update(ImageModel image)
         {
@@ -52,6 +57,7 @@ namespace ImageService.Controllers
             await _imageService.Update(imageEntity);
         }
 
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task Delete(Guid id)
         {
