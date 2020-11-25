@@ -47,7 +47,8 @@ namespace Repository
                 await using var db = await GetSqlConnection();
 
                 FillBaseFields(entity);
-                var (fields, values) = FillDbStructureForCreate();
+
+                var (fields, values) = FillDbTableStructureForCreate();
 
                 await db.ExecuteAsync($"INSERT INTO {_tableName} ({fields}) VALUES ({values})", entity);
             }
@@ -65,7 +66,7 @@ namespace Repository
 
                 FillBaseFields(entity, true);
 
-                var parameters = FillDbStructureForUpdate();
+                var parameters = FillDbTableStructureForUpdate();
 
                 await db.ExecuteAsync($"UPDATE {_tableName} SET {parameters} WHERE [Id] = @Id", entity);
             }
@@ -89,7 +90,7 @@ namespace Repository
             {
                 FillBaseFields(entity);
 
-                var (fields, values) = FillDbStructureForCreate();
+                var (fields, values) = FillDbTableStructureForCreate();
 
                 await db.ExecuteAsync($"INSERT INTO {_tableName} ({fields}) VALUES ({values})", entities);
             }
@@ -103,7 +104,7 @@ namespace Repository
             {
                 FillBaseFields(entity, true);
 
-                var parameters = FillDbStructureForUpdate();
+                var parameters = FillDbTableStructureForUpdate();
 
                 await db.ExecuteAsync($"UPDATE {_tableName} SET {parameters} WHERE [Id] = @Id", entities);
             }
@@ -126,14 +127,14 @@ namespace Repository
             return db;
         }
         
-        private (string fields, string values) FillDbStructureForCreate()
+        private (string fields, string values) FillDbTableStructureForCreate()
         {
             var fields = string.Join(", ", typeof(T).GetProperties().Select(prop => $"[{prop.Name}]"));
             var values = string.Join(", ", typeof(T).GetProperties().Select(prop => $"@{prop.Name}"));
             return (fields, values);
         }
 
-        private static string FillDbStructureForUpdate()
+        private static string FillDbTableStructureForUpdate()
         {
             var notUpdateFields = new[] {"Id", "CreatedDate", "CreatedBy", "IsDeleted"};
             return string.Join(", ",
