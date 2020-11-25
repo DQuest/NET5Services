@@ -62,11 +62,12 @@ namespace AuthService.Services
             var authLoginKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Security:Secret"]));
 
             return new JwtSecurityToken(
-                _configuration["Security:Issuer"],
-                _configuration["Security:Audience"],
+                issuer: _configuration["Security:Issuer"],
+                audience: _configuration["Security:Audience"],
                 expires: DateTime.Now.AddHours(24),
                 claims: claims,
-                signingCredentials: new SigningCredentials(authLoginKey, SecurityAlgorithms.Sha256));
+                signingCredentials: new SigningCredentials(authLoginKey, SecurityAlgorithms.HmacSha256)
+            );
         }
     }
 }
