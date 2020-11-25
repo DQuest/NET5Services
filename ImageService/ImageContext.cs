@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using ImageService.Models;
 using ImageService.Entities;
 using Microsoft.EntityFrameworkCore;
 

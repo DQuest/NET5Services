@@ -24,12 +24,12 @@ namespace ImageService.Controllers
         }
 
         /// <summary>
-        /// Получение изображений-превьюшек для продукта.
+        /// Получение изображений для продукта.
         /// </summary>
         /// <param name="productId">Идентификатор продукта</param>
         /// <returns></returns>
         [Authorize]
-        [HttpGet]
+        [HttpGet("GetAllImages/{productId}")]
         public async Task<IEnumerable<ImageModel>> GetAll(Guid productId)
         {
             var imagesEntity = await _imageService.GetAll(productId);
@@ -37,12 +37,12 @@ namespace ImageService.Controllers
         }
 
         /// <summary>
-        /// Получение увеличенного изображения для продукта.
+        /// Получение определённого изображения todo: для продукта.
         /// </summary>
-        /// <param name="imageId">Идентификатор изображения</param>
+        /// <param name="imageId"></param>
         /// <returns></returns>
         [Authorize]
-        [HttpGet("{id}")]
+        [HttpGet("GetImages/{imageId}")]
         public async Task<ImageModel> Get(Guid imageId)
         {
             var imageEntity = await _imageService.Get(imageId);
@@ -80,8 +80,7 @@ namespace ImageService.Controllers
         /// <param name="productsIds">Идентификаторы продуктов</param>
         /// <returns></returns>
         [Authorize(Roles = "Admin")]
-        [Authorize]
-        [HttpDelete("{id}")]
+        [HttpDelete("{productsIds}")]
         public async Task Delete(IEnumerable<Guid> productsIds)
         {
             await _imageService.Delete(productsIds);

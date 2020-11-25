@@ -2,26 +2,37 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using ImageService.Clients;
 using ImageService.Entities;
 using ImageService.Interfaces;
 using ImageService.Models;
+using ImageService.Models.YandexDisk;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
+using IConfiguration = Microsoft.Extensions.Configuration.IConfiguration;
 
 namespace ImageService.Services
 {
     public class ImageService : IImageService
     {
+        private readonly string _token;
         private readonly ImageContext _imageContext;
-        private readonly IYandexDriveImageClient _yandexDriveImageClient;
+        private readonly IYandexDiskImageClient _yandexDiskImageClient;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public ImageService(ImageContext imageContext, IYandexDriveImageClient yandexDriveImageClient, IHttpContextAccessor httpContextAccessor)
+        public ImageService(
+            ImageContext imageContext, 
+            IYandexDiskImageClient yandexDiskImageClient, 
+            IHttpContextAccessor httpContextAccessor, 
+            IConfiguration cfg)
         {
+            _token = cfg.GetValue<string>("YandexToken");
             _imageContext = imageContext ?? throw new ArgumentException(nameof(imageContext));
-            _yandexDriveImageClient = yandexDriveImageClient ?? throw new ArgumentException(nameof(yandexDriveImageClient));;
+            _yandexDiskImageClient = yandexDiskImageClient ?? throw new ArgumentException(nameof(yandexDiskImageClient));;
             _httpContextAccessor = httpContextAccessor ?? throw new ArgumentException(nameof(httpContextAccessor));
         }
 
@@ -47,40 +58,20 @@ namespace ImageService.Services
             {
                 throw new ArgumentException($"Не удалось получить увеличенное изображение с идентификатором {imageId}.");
             }
-            
-            // todo менять size=S в ссылке для отображения увеличенного изображения. Например на size=XL
 
             return image;
         }
 
         public async Task Create(UploadImagesModel uploadImagesModel)
         {
-            // todo заливка изображения на ядиск, ссылку на превьюшку в БД
-            try
-            {
-                var fullPath = GetFullPathForImage(imageUrl);
-                var response = await _yandexDriveImageClient.Upload(imageUrl, fullPath, _token);
-                var deserializedResponse = JsonConvert.DeserializeObject<UploadResponseModel>(response);
-
-                await _imageDbClient.Create(new ImageDbModel
-                {
-                    Id = new Guid(),
-                    Url = deserializedResponse.Href,
-                    FullPathOnDisk = fullPath,
-                    ProductId = Guid.Parse("00000000-0000-0000-0000-000000000000")
-                });
-            }
-            catch (Exception ex)
-            {
-                throw new ArgumentException(ex.Message);
-            }
-            
             var dateTimeNow = DateTime.UtcNow;
-            
+
+            var imagesHrefs = await UploadImagesToYandexDisk(uploadImagesModel.ImageUrls);
+
             Guid.TryParse(_httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier),
                 out var userId);
 
-            var images = uploadImagesModel.ImageUrls.Select(imageUrl => new ImageEntity
+            var images = imagesHrefs.Select(imageUrl => new ImageEntity
                 {
                     Id = Guid.NewGuid(),
                     CreatedDate = dateTimeNow,
@@ -88,7 +79,7 @@ namespace ImageService.Services
                     CreatedBy = userId,
                     LastSavedBy = userId,
                     ProductId = uploadImagesModel.ProductId,
-                    PreviewUrl = imageUrl
+                    Url = imageUrl
                 })
                 .ToList();
 
@@ -134,6 +125,48 @@ namespace ImageService.Services
 
             _imageContext.Image.RemoveRange(productsImages);
             await _imageContext.SaveChangesAsync();
+        }
+        
+        private async Task<List<string>> UploadImagesToYandexDisk(IEnumerable<string> imagesUrls)
+        {
+            var imagesHrefs = new List<string>();
+            try
+            {
+                foreach (var imageUrl in imagesUrls)
+                {
+                    var fullPath = GetFullPathForImage(imageUrl);
+                    var response = await _yandexDiskImageClient.Upload(imageUrl, fullPath, _token);
+                    var deserializedResponse = JsonConvert.DeserializeObject<UploadResponse>(response);
+
+                    imagesHrefs.Add(deserializedResponse.Href);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new ArgumentException(ex.Message);
+            }
+
+            return imagesHrefs;
+        }
+
+        /// <summary>
+        /// Сформировать полный путь для заливки файла в папку CustomImageFolder 
+        /// </summary>
+        /// <param name="imageUrl"></param>
+        /// <returns></returns>
+        private string GetFullPathForImage(string imageUrl)
+        {
+            // Вытягиваем регулярками название изображения с расширением
+            var imgNameWithExtensionPattern = new Regex(@"[\w-]+\.(jpg|jpeg|png|bmp|gif)");
+            var imgNameWithExtension = imgNameWithExtensionPattern.Match(imageUrl).Value;
+
+            // Если у файла нет расшриения и названия, льём с названием "image" без расширения
+            if (string.IsNullOrEmpty(imgNameWithExtension))
+            {
+                imgNameWithExtension = "image";
+            }
+
+            return $"CustomImageFolder/{imgNameWithExtension}";
         }
     }
 }

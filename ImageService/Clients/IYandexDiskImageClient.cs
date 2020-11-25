@@ -4,15 +4,15 @@ using Refit;
 
 namespace ImageService.Clients
 {
-    public interface IYandexDriveImageClient
+    public interface IYandexDiskImageClient
     {
         /// <summary>
-        /// Получить список изображений.
+        /// Получить список изображений с яндекс диска.
         /// </summary>
         /// <param name="authorization"></param>
         /// <returns></returns>
         [Get("/v1/disk/resources/files?media_type=image")]
-        Task<ImageYandexModel> GetAll([Header("Authorization")] string authorization);
+        Task<ImageModel> GetAll([Header("Authorization")] string authorization);
         
         /// <summary>
         /// Получить изображение с яндекс диска по указанному полному пути.
@@ -21,13 +21,13 @@ namespace ImageService.Clients
         /// <param name="authorization"></param>
         /// <returns></returns>
         [Get("/v1/disk/resources?path={fullPath}")]
-        Task<ImageYandexModel> Get(string fullPath, [Header("Authorization")] string authorization);
+        Task<ImageModel> Get(string fullPath, [Header("Authorization")] string authorization);
 
         /// <summary>
         /// Загрузить файл в Диск по URL.
         /// </summary>
         /// <returns></returns>
-        [Post("/v1/disk/resources/upload?path={fullPath}&url={imageUrl}")]
+        [Post("/v1/disk/resources/upload?path={fullPath}&url={imageUrl}&fields=href")]
         Task<string> Upload(string imageUrl, string fullPath, [Header("Authorization")] string authorization);
     }
 }

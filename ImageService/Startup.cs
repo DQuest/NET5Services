@@ -71,7 +71,7 @@ namespace ImageService
         {
             var refitSettings = GetRefitSettings();
             services.TryAddTransient(
-                ImplementationFactory<IYandexDriveImageClient>(refitSettings, "https://cloud-api.yandex.net"));
+                ImplementationFactory<IYandexDiskImageClient>(refitSettings, "https://cloud-api.yandex.net"));
         }
         
         private RefitSettings GetRefitSettings()

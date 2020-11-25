@@ -10,8 +10,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Repository", "Repository\Re
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebUI", "WebUI\WebUI.csproj", "{A619CB31-8E05-4B74-AD6E-03C638020A1F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomImageService", "CustomImageService\CustomImageService.csproj", "{F5B4ED63-458B-4069-8F09-94097A7C3D9A}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthService", "AuthService\AuthService.csproj", "{59C65D35-E7DC-4300-A6F7-C99049DF21F2}"
 EndProject
 Global
@@ -40,10 +38,6 @@ Global
 		{A619CB31-8E05-4B74-AD6E-03C638020A1F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A619CB31-8E05-4B74-AD6E-03C638020A1F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A619CB31-8E05-4B74-AD6E-03C638020A1F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F5B4ED63-458B-4069-8F09-94097A7C3D9A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F5B4ED63-458B-4069-8F09-94097A7C3D9A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F5B4ED63-458B-4069-8F09-94097A7C3D9A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F5B4ED63-458B-4069-8F09-94097A7C3D9A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{59C65D35-E7DC-4300-A6F7-C99049DF21F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{59C65D35-E7DC-4300-A6F7-C99049DF21F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{59C65D35-E7DC-4300-A6F7-C99049DF21F2}.Release|Any CPU.ActiveCfg = Release|Any CPU

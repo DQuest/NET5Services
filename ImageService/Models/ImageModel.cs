@@ -9,9 +9,6 @@ namespace ImageService.Models
 
         public Guid ProductId { get; set; }
 
-        public string Name { get; set; }
-
-        [JsonProperty("preview")]
-        public string PreviewUrl { get; set; }
+        public string Url { get; set; }
     }
 }
