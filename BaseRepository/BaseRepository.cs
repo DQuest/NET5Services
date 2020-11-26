@@ -8,7 +8,7 @@ using Dapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 
-namespace Repository
+namespace BaseRepository
 {
     public class BaseRepository<T> : IBaseRepository<T>
         where T : BaseEntity

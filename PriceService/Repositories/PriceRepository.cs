@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using PriceService.Interfaces;
-using Repository;
+using BaseRepository;
 
 namespace PriceService.Repositories
 {

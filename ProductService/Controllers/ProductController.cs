@@ -6,6 +6,8 @@ using ProductService.Models;
 
 namespace ProductService.Controllers
 {
+    [ApiController]
+    [Authorize]
     [Route("api/products")]
     public class ProductController : Controller
     {
@@ -16,14 +18,12 @@ namespace ProductService.Controllers
             _productService = productService;
         }
 
-        [Authorize]
         [HttpGet]
         public IEnumerable<ProductModel> GetAll()
         {
             return _productService.GetAll();
         }
 
-        [Authorize]
         [HttpGet("{id}")]
         public ProductModel Get(long id)
         {

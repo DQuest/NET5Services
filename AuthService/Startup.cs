@@ -1,19 +1,15 @@
-using System.Text;
+using AuthBase;
+using AuthBase.Extensions;
 using AuthService.Configuration;
 using AuthService.Interfaces;
 using AuthService.Services;
 using AutoMapper;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using AuthService.Models.User;
 
 namespace AuthService
 {
@@ -30,17 +26,13 @@ namespace AuthService
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddAppAuth(Configuration);
+            services.AddTransient<AppSecurity>();
 
             services.AddScoped<ISignUpService, SignUpService>();
             services.AddScoped<ILoginService, LoginService>();
-            services.AddScoped<IRestorePasswordService, RestorePasswordService>();
-            services.AddScoped<IUserRoleService, UserRoleService>();
 
-            AddDbContext(services);
-            AddIdentity(services);
-            AddAuthentication(services);
             AddAutoMapper(services);
-
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo {Title = "AuthService", Version = "v1"});
@@ -76,43 +68,6 @@ namespace AuthService
 
             var mapper = mapperConfig.CreateMapper();
             services.AddSingleton(mapper);
-        }
-
-        private void AddDbContext(IServiceCollection services)
-        {
-            services.AddDbContext<AuthDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("Authentication")));
-        }
-
-        private void AddIdentity(IServiceCollection services)
-        {
-            services.AddIdentity<User, IdentityRole>()
-                .AddEntityFrameworkStores<AuthDbContext>()
-                .AddDefaultTokenProviders();
-        }
-
-        private void AddAuthentication(IServiceCollection services)
-        {
-            services.AddAuthentication(options =>
-                {
-                    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-                })
-                .AddJwtBearer(options =>
-                {
-                    options.SaveToken = true;
-                    options.RequireHttpsMetadata = false;
-                    options.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuer = true,
-                        ValidateAudience = true,
-                        ValidIssuer = Configuration["Security:Issuer"],
-                        ValidAudience = Configuration["Security:Audience"],
-                        IssuerSigningKey =
-                            new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Security:Secret"]))
-                    };
-                });
         }
     }
 }

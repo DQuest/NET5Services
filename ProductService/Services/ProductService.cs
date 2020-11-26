@@ -9,8 +9,6 @@ namespace ProductService.Services
 {
     public class ProductService : IProductService
     {
-        private IEnumerable<ProductModel> _products;
-
         private readonly IImageClient _imageClient;
         private readonly IPriceClient _priceClient;
 

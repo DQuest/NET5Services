@@ -1,11 +1,16 @@
-FROM mcr.microsoft.com/dotnet/aspnet:latest as base
+FROM mcr.microsoft.com/dotnet/aspnet:5.0-buster-slim as base
 WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
-FROM mcr.microsoft.com/dotnet/sdk:latest as build
+FROM mcr.microsoft.com/dotnet/sdk:5.0-buster-slim as build
 WORKDIR /src
-COPY . .
+
+COPY ./ImageService ./ImageService
+COPY ./BaseRepository ./BaseRepository
+COPY ./AuthBase ./AuthBase
+
+WORKDIR ./ImageService
 RUN dotnet restore "ImageService.csproj"
 RUN dotnet build "ImageService.csproj" -c Release -o /app/build
 

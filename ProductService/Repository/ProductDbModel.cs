@@ -1,4 +1,4 @@
-using Repository;
+using BaseRepository;
 
 namespace ProductService.Repository
 {

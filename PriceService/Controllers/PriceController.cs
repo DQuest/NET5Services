@@ -11,6 +11,7 @@ using PriceService.Repositories;
 namespace PriceService.Controllers
 {
     [ApiController]
+    [Authorize]
     [Route("api/prices")]
     public class PriceController : Controller
     {
@@ -23,7 +24,6 @@ namespace PriceService.Controllers
             _priceRepository = priceRepository;
         }
 
-        [Authorize]
         [HttpGet]
         public async Task<IEnumerable<PriceModel>> GetAll()
         {
@@ -31,7 +31,6 @@ namespace PriceService.Controllers
             return _mapper.Map<IEnumerable<PriceModel>>(priceEntity);
         }
 
-        [Authorize]
         [HttpGet("{id}")]
         public async Task<PriceModel> Get(Guid id)
         {
@@ -39,7 +38,6 @@ namespace PriceService.Controllers
             return _mapper.Map<PriceModel>(priceEntity);
         }
 
-        [Authorize]
         [HttpPost]
         public async Task Create(PriceModel price)
         {
@@ -47,7 +45,6 @@ namespace PriceService.Controllers
             await _priceRepository.Create(priceEntity);
         }
 
-        [Authorize]
         [HttpPut]
         public async Task Update(PriceModel price)
         {
@@ -55,7 +52,6 @@ namespace PriceService.Controllers
             await _priceRepository.Update(priceEntity);
         }
 
-        [Authorize]
         [HttpDelete("{id}")]
         public async Task Delete(Guid id)
         {

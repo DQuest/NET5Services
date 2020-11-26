@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace ImageService.Controllers
 {
     [ApiController]
+    [Authorize]
     [Route("api/images")]
     public class ImageController : Controller
     {
@@ -28,7 +29,6 @@ namespace ImageService.Controllers
         /// </summary>
         /// <param name="productId">Идентификатор продукта</param>
         /// <returns></returns>
-        [Authorize]
         [HttpGet("GetAllImages/{productId}")]
         public async Task<IEnumerable<ImageModel>> GetAll(Guid productId)
         {
@@ -41,7 +41,6 @@ namespace ImageService.Controllers
         /// </summary>
         /// <param name="imageId"></param>
         /// <returns></returns>
-        [Authorize]
         [HttpGet("GetImages/{imageId}")]
         public async Task<ImageModel> Get(Guid imageId)
         {
@@ -54,7 +53,6 @@ namespace ImageService.Controllers
         /// </summary>
         /// <param name="uploadImagesModel">Модель загрузки изображений для продукта</param>
         /// <returns></returns>
-        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task Create(UploadImagesModel uploadImagesModel)
         {
@@ -66,7 +64,6 @@ namespace ImageService.Controllers
         /// </summary>
         /// <param name="image"></param>
         /// <returns></returns>
-        [Authorize(Roles = "Admin")]
         [HttpPut]
         public async Task Update(ImageModel image)
         {
@@ -79,7 +76,6 @@ namespace ImageService.Controllers
         /// </summary>
         /// <param name="productsIds">Идентификаторы продуктов</param>
         /// <returns></returns>
-        [Authorize(Roles = "Admin")]
         [HttpDelete("{productsIds}")]
         public async Task Delete(IEnumerable<Guid> productsIds)
         {

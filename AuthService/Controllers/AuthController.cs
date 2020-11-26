@@ -12,16 +12,13 @@ namespace AuthService.Controllers
     {
         private readonly ISignUpService _signUpService;
         private readonly ILoginService _loginService;
-        private readonly IRestorePasswordService _restorePasswordService;
 
         public AuthController(
             ISignUpService signUpService,
-            ILoginService loginService,
-            IRestorePasswordService restorePasswordService)
+            ILoginService loginService)
         {
             _signUpService = signUpService ?? throw new ArgumentException(nameof(signUpService));
             _loginService = loginService ?? throw new ArgumentException(nameof(loginService));
-            _restorePasswordService = restorePasswordService ?? throw new ArgumentException(nameof(restorePasswordService));;
         }
 
         [HttpPost("signup")]
@@ -35,11 +32,5 @@ namespace AuthService.Controllers
         {
             return await _loginService.Login(loginModel);
         }
-
-        // [HttpPost("restore")]
-        // public async Task<IActionResult> RestorePassword(RestorePasswordModel restorePasswordModel)
-        // {
-        //     return await _restorePasswordService.RestorePassword(restorePasswordModel);
-        // }
     }
 }

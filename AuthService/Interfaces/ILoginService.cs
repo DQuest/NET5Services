@@ -6,6 +6,6 @@ namespace AuthService.Interfaces
 {
     public interface ILoginService
     {
-        Task<IActionResult> Login(LoginModel loginModel);
+        Task<ObjectResult> Login(LoginModel loginModel);
     }
 }

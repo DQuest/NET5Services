@@ -1,11 +1,15 @@
-FROM mcr.microsoft.com/dotnet/aspnet:latest as base
+FROM mcr.microsoft.com/dotnet/aspnet:5.0-buster-slim as base
 WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
-FROM mcr.microsoft.com/dotnet/sdk:latest as build
+FROM mcr.microsoft.com/dotnet/sdk:5.0-buster-slim as build
 WORKDIR /src
-COPY . .
+
+COPY ./AuthService ./AuthService
+COPY ./AuthBase ./AuthBase
+
+WORKDIR ./AuthService
 RUN dotnet restore "AuthService.csproj"
 RUN dotnet build "AuthService.csproj" -c Release -o /app/build
 

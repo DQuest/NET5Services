@@ -1,9 +1,9 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using AuthBase.Models;
 using AuthService.Interfaces;
 using AuthService.Models.SignUp;
-using AuthService.Models.User;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -15,13 +15,15 @@ namespace AuthService.Services
         private readonly UserManager<User> _userManager;
         private readonly IMapper _mapper;
 
-        public SignUpService(UserManager<User> userManager, IMapper mapper)
+        public SignUpService(
+            UserManager<User> userManager, 
+            IMapper mapper)
         {
             _userManager = userManager ?? throw new ArgumentException(nameof(userManager));
             _mapper = mapper ?? throw new ArgumentException(nameof(mapper));
         }
         
-        public async Task<IActionResult> SignUp(SignUpModel signUpModel)
+        public async Task<ObjectResult> SignUp(SignUpModel signUpModel)
         {
             var userExists = await _userManager.FindByNameAsync(signUpModel.Username);
 

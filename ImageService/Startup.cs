@@ -1,20 +1,17 @@
 using System;
 using System.Net.Http;
-using System.Text;
+using AuthBase.Extensions;
 using AutoMapper;
 using ImageService.Clients;
 using ImageService.Configuration;
 using ImageService.Interfaces;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using Refit;
@@ -33,18 +30,18 @@ namespace ImageService
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddAppAuth(Configuration);
+            services.AddForwardedHeadersConfiguration();
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo {Title = "ImageService", Version = "v1"});
             });
-            
+
             services.AddTransient<IImageService, Services.ImageService>();
-            services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             SetupRefit(services);
             AddAutoMapper(services);
-            AddAuthentication(services);
             AddDbContext(services);
         }
 
@@ -64,14 +61,19 @@ namespace ImageService
 
             app.UseAuthorization();
 
+            app.UseAuthentication();
+
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }
         
         private void SetupRefit(IServiceCollection services)
         {
             var refitSettings = GetRefitSettings();
+            
+            var yandexApiUrl = Configuration.GetSection("YandexApiUrl").Value;
+            
             services.TryAddTransient(
-                ImplementationFactory<IYandexDiskImageClient>(refitSettings, "https://cloud-api.yandex.net"));
+                ImplementationFactory<IYandexDiskImageClient>(refitSettings, yandexApiUrl));
         }
         
         private RefitSettings GetRefitSettings()
@@ -86,31 +88,7 @@ namespace ImageService
                     })
             };
         }
-        
-        private void AddAuthentication(IServiceCollection services)
-        {
-            services.AddAuthentication(options =>
-                {
-                    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-                })
-                .AddJwtBearer(options =>
-                {
-                    options.SaveToken = true;
-                    options.RequireHttpsMetadata = false;
-                    options.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuer = true,
-                        ValidateAudience = true,
-                        ValidIssuer = Configuration["Security:Issuer"],
-                        ValidAudience = Configuration["Security:Audience"],
-                        IssuerSigningKey =
-                            new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Security:Secret"]))
-                    };
-                });
-        }
-        
+
         private void AddAutoMapper(IServiceCollection services)
         {
             services.AddAutoMapper(typeof(Startup));

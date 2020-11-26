@@ -6,6 +6,6 @@ namespace AuthService.Interfaces
 {
     public interface ISignUpService
     {
-        Task<IActionResult> SignUp(SignUpModel signUpModel);
+        Task<ObjectResult> SignUp(SignUpModel signUpModel);
     }
 }

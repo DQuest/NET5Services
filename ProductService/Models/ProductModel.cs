@@ -19,6 +19,6 @@ namespace ProductService.Models
         /// <summary>
         /// Цены на товар.
         /// </summary>
-        public IEnumerable<PriceModel> Prices { get; set; }
+        public PriceModel Prices { get; set; }
     }
 }

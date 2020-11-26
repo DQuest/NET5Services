@@ -1,32 +1,26 @@
 using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
 using System.Threading.Tasks;
+using AuthBase;
+using AuthBase.Models;
 using AuthService.Interfaces;
 using AuthService.Models.Login;
-using AuthService.Models.User;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
 
 namespace AuthService.Services
 {
     public class LoginService : ILoginService
     {
         private readonly UserManager<User> _userManager;
-        private readonly IConfiguration _configuration;
+        private readonly AppSecurity _appSecurity;
 
-        public LoginService(UserManager<User> userManager, IConfiguration configuration)
+        public LoginService(UserManager<User> userManager, AppSecurity appSecurity)
         {
             _userManager = userManager ?? throw new ArgumentException(nameof(userManager));
-            _configuration = configuration ?? throw new ArgumentException(nameof(configuration));
+            _appSecurity = appSecurity ?? throw new ArgumentException(nameof(appSecurity));
         }
 
-        public async Task<IActionResult> Login(LoginModel loginModel)
+        public async Task<ObjectResult> Login(LoginModel loginModel)
         {
             var user = await _userManager.FindByNameAsync(loginModel.Username);
 
@@ -40,34 +34,13 @@ namespace AuthService.Services
 
             var userRoles = await _userManager.GetRolesAsync(user);
 
-            var token = GenerateJwtSecurityToken(user, userRoles);
+            var token = _appSecurity.GetToken(user.Id, DateTime.Now, userRoles);
 
             return new OkObjectResult(new LoginResponse
             {
                 Username = loginModel.Username,
-                Token = new JwtSecurityTokenHandler().WriteToken(token)
+                Token = token
             });
-        }
-
-        private JwtSecurityToken GenerateJwtSecurityToken(User user, IList<string> userRoles)
-        {
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Name, user.UserName),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-            };
-
-            claims.AddRange(userRoles.Select(userRole => new Claim(ClaimTypes.Role, userRole)));
-
-            var authLoginKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Security:Secret"]));
-
-            return new JwtSecurityToken(
-                issuer: _configuration["Security:Issuer"],
-                audience: _configuration["Security:Audience"],
-                expires: DateTime.Now.AddHours(24),
-                claims: claims,
-                signingCredentials: new SigningCredentials(authLoginKey, SecurityAlgorithms.HmacSha256)
-            );
         }
     }
 }

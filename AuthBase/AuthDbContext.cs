@@ -1,13 +1,12 @@
-using AuthService.Models.User;
+using AuthBase.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace AuthService
+namespace AuthBase
 {
     public class AuthDbContext : IdentityDbContext<User>
     {
-        public AuthDbContext(DbContextOptions<AuthDbContext> options)
-            : base(options)
+        public AuthDbContext(DbContextOptions<AuthDbContext> options) : base(options)
         {
             Database.EnsureCreated();
         }

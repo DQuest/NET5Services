@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Repository
+namespace BaseRepository
 {
     public class BaseEntity
     {

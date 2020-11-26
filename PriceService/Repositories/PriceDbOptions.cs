@@ -1,4 +1,4 @@
-using Repository;
+using BaseRepository;
 
 namespace PriceService.Repositories
 {
