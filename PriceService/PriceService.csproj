@@ -12,6 +12,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\AuthBase\AuthBase.csproj" />
       <ProjectReference Include="..\BaseRepository\BaseRepository.csproj" />
     </ItemGroup>
 

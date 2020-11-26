@@ -5,7 +5,12 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:5.0-buster-slim as build
 WORKDIR /src
-COPY . .
+
+COPY ./PriceService ./PriceService
+COPY ./BaseRepository ./BaseRepository
+COPY ./AuthBase ./AuthBase
+
+WORKDIR ./PriceService
 RUN dotnet restore "PriceService.csproj"
 RUN dotnet build "PriceService.csproj" -c Release -o /app/build
 

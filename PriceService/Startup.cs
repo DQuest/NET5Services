@@ -1,14 +1,10 @@
-using System.Text;
+using AuthBase.Extensions;
 using AutoMapper;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using PriceService.Configuration;
 using PriceService.Interfaces;
@@ -28,6 +24,7 @@ namespace PriceService
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddAppAuth(Configuration);
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
@@ -35,9 +32,8 @@ namespace PriceService
             });
             
             services.AddScoped<IPriceRepository, PriceRepository>();
-            services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            //services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
-            AddAuthentication(services);
             AddAutoMapper(services);
             services.AddPriceDbOptions(Configuration);
         }
@@ -56,9 +52,9 @@ namespace PriceService
 
             app.UseRouting();
 
-            app.UseAuthorization();
-            
             app.UseAuthentication();
+            
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }
@@ -71,30 +67,6 @@ namespace PriceService
 
             var mapper = mapperConfig.CreateMapper();
             services.AddSingleton(mapper);
-        }
-        
-        private void AddAuthentication(IServiceCollection services)
-        {
-            services.AddAuthentication(options =>
-                {
-                    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-                })
-                .AddJwtBearer(options =>
-                {
-                    options.SaveToken = true;
-                    options.RequireHttpsMetadata = false;
-                    options.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuer = true,
-                        ValidateAudience = true,
-                        ValidIssuer = Configuration["Security:Issuer"],
-                        ValidAudience = Configuration["Security:Audience"],
-                        IssuerSigningKey =
-                            new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Security:Secret"]))
-                    };
-                });
         }
     }
 }

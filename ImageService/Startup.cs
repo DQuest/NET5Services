@@ -31,7 +31,7 @@ namespace ImageService
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddAppAuth(Configuration);
-            services.AddForwardedHeadersConfiguration();
+            //services.AddForwardedHeadersConfiguration();
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
@@ -59,9 +59,9 @@ namespace ImageService
 
             app.UseRouting();
 
-            app.UseAuthorization();
-
             app.UseAuthentication();
+
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }
