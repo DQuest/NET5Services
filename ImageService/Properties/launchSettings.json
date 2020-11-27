@@ -9,7 +9,7 @@
     }
   },
   "profiles": {
-    "Homework2.ImageService": {
+    "ImageService": {
       "commandName": "Project",
       "dotnetRunMessages": "true",
       "launchBrowser": true,

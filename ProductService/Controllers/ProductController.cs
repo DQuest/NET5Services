@@ -26,7 +26,7 @@ namespace ProductService.Controllers
             return await _productService.GetAll();
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{productId}")]
         public async Task<ProductModel> Get(Guid productId)
         {
             return await _productService.Get(productId);
@@ -44,7 +44,7 @@ namespace ProductService.Controllers
             await _productService.Update(product);
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{productId}")]
         public async Task Delete(Guid productId)
         {
             await _productService.Delete(productId);

@@ -29,7 +29,7 @@ namespace ProductService
         {
             services.AddAppAuth(Configuration);
             services.AddServiceClients(Configuration);
-            // services.AddForwardedHeadersConfiguration();
+            services.AddForwardedHeadersConfiguration();
 
             services.AddControllers();
             services.AddSwaggerGen(c =>

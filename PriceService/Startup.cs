@@ -32,7 +32,6 @@ namespace PriceService
             });
             
             services.AddScoped<IPriceRepository, PriceRepository>();
-            //services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             AddAutoMapper(services);
             services.AddPriceDbOptions(Configuration);
