@@ -1,8 +1,8 @@
 using BaseRepository;
 
-namespace ProductService.Repository
+namespace ProductService.Entities
 {
-    public class ProductDbModel : BaseEntity
+    public class ProductEntity : BaseEntity
     {
         public string Name { get; set; }
 

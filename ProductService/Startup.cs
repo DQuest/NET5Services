@@ -1,20 +1,17 @@
-using System;
-using System.Net.Http;
-using System.Text;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+using AuthBase.Extensions;
+using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
-using ProductService.Clients;
+using ProductService.Configuration;
+using ProductService.Extensions;
 using ProductService.Interfaces;
-using Refit;
 
 namespace ProductService
 {
@@ -30,6 +27,10 @@ namespace ProductService
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddAppAuth(Configuration);
+            services.AddServiceClients(Configuration);
+            // services.AddForwardedHeadersConfiguration();
+
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
@@ -38,18 +39,9 @@ namespace ProductService
 
             services.AddScoped<IProductService, ProductService.Services.ProductService>();
 
-            services.AddEntityFrameworkNpgsql().AddDbContext<ProductContext>();
-            AddAuthentication(services);
+            AddDbContext(services);
+            AddAutoMapper(services);
             AddNewtonsoftJson(services);
-            SetupRefit(services);
-        }
-
-        private Func<IServiceProvider, T> ImplementationFactory<T>(RefitSettings refitSettings, string uri)
-        {
-            return _ => RestService.For<T>(new HttpClient
-            {
-                BaseAddress = new Uri(uri)
-            }, refitSettings);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -72,55 +64,34 @@ namespace ProductService
                 app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
             }
         }
-        
-        private void SetupRefit(IServiceCollection services)
-        {
-            var refitSettings = new RefitSettings
-            {
-                ContentSerializer = new NewtonsoftJsonContentSerializer(
-                    new JsonSerializerSettings
-                    {
-                        DefaultValueHandling = DefaultValueHandling.Ignore,
-                        NullValueHandling = NullValueHandling.Ignore
-                    })
-            };
-
-            services.TryAddTransient(ImplementationFactory<IImageClient>(refitSettings, "https://localhost:5003"));
-            services.TryAddTransient(ImplementationFactory<IPriceClient>(refitSettings, "https://localhost:5005"));
-        }
 
         private void AddNewtonsoftJson(IServiceCollection services)
         {
             services.AddMvc().AddNewtonsoftJson();
             services.AddControllers().AddNewtonsoftJson(options =>
             {
-                options.SerializerSettings.ContractResolver = new DefaultContractResolver();
+                options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+                options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
                 options.SerializerSettings.DefaultValueHandling = DefaultValueHandling.Ignore;
             });
         }
         
-        private void AddAuthentication(IServiceCollection services)
+        private void AddAutoMapper(IServiceCollection services)
         {
-            services.AddAuthentication(options =>
-                {
-                    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-                })
-                .AddJwtBearer(options =>
-                {
-                    options.SaveToken = true;
-                    options.RequireHttpsMetadata = false;
-                    options.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuer = true,
-                        ValidateAudience = true,
-                        ValidIssuer = Configuration["Security:Issuer"],
-                        ValidAudience = Configuration["Security:Audience"],
-                        IssuerSigningKey =
-                            new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Security:Secret"]))
-                    };
-                });
+            services.AddAutoMapper(typeof(Startup));
+
+            var mapper = new MapperConfiguration(
+                    config => { config.AddProfile(new AutoMapping()); })
+                .CreateMapper();
+
+            services.AddSingleton(mapper);
+        }
+
+        private void AddDbContext(IServiceCollection services)
+        {
+            services.AddEntityFrameworkNpgsql()
+                .AddDbContext<ProductContext>(opts =>
+                    opts.UseNpgsql(Configuration.GetConnectionString("Product")));
         }
     }
 }

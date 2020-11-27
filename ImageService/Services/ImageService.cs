@@ -41,7 +41,7 @@ namespace ImageService.Services
             var images = await _imageContext.Image
                 .Where(x => x.ProductId == productId)
                 .ToListAsync();
-            
+
             if (images == null)
             {
                 throw new ArgumentException($"Изображения для продукта с идентификатором {productId} не найдены.");

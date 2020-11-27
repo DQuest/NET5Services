@@ -1,12 +1,20 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using ProductService.Models;
 
 namespace ProductService.Interfaces
 {
     public interface IProductService
     {
-        IEnumerable<ProductModel> GetAll();
+        Task<IEnumerable<ProductModel>> GetAll();
 
-        ProductModel Get(long id);
+        Task<ProductModel> Get(Guid productId);
+
+        Task Create(ProductModel product);
+
+        Task Update(ProductModel product);
+
+        Task Delete(Guid productId);
     }
 }

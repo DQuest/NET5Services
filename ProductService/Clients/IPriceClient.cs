@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using ProductService.Models;
@@ -7,7 +8,7 @@ namespace ProductService.Clients
 {
     public interface IPriceClient
     {
-        [Get("/api/prices")]
-        Task<IEnumerable<PriceModel>> GetAll();
+        [Get("/api/prices/GetPriceForProduct/{productId}")]
+        Task<PriceModel> Get(Guid productId);
     }
 }

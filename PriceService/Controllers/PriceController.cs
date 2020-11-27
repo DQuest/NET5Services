@@ -31,10 +31,10 @@ namespace PriceService.Controllers
             return _mapper.Map<IEnumerable<PriceModel>>(priceEntity);
         }
 
-        [HttpGet("{id}")]
-        public async Task<PriceModel> Get(Guid id)
+        [HttpGet("GetPriceForProduct/{productId}")]
+        public async Task<PriceModel> Get(Guid productId)
         {
-            var priceEntity = await _priceRepository.Get(id);
+            var priceEntity = await _priceRepository.Get(productId);
             return _mapper.Map<PriceModel>(priceEntity);
         }
 

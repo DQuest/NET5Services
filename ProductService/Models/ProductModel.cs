@@ -12,6 +12,11 @@ namespace ProductService.Models
         public string Name { get; set; }
 
         /// <summary>
+        /// Описание продукта.
+        /// </summary>
+        public string Description { get; set; }
+
+        /// <summary>
         /// Изображения товара.
         /// </summary>
         public IEnumerable<ImageModel> Images { get; set; }
