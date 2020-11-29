@@ -9,7 +9,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=https://+:443;http://+:80
       - ASPNETCORE_Kestrel__Certificates__Default__Password=123
-      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/homework.pfx
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/net5services.pfx
     volumes:
       - ~/.aspnet/https:/https:ro
     build:
@@ -26,7 +26,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=https://+:443;http://+:80
       - ASPNETCORE_Kestrel__Certificates__Default__Password=123
-      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/homework.pfx
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/net5services.pfx
     volumes:
       - ~/.aspnet/https:/https:ro
     build:
@@ -43,7 +43,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=https://+:443;http://+:80
       - ASPNETCORE_Kestrel__Certificates__Default__Password=123
-      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/homework.pfx
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/net5services.pfx
     volumes:
       - ~/.aspnet/https:/https:ro
     build:
@@ -60,7 +60,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=https://+:443;http://+:80
       - ASPNETCORE_Kestrel__Certificates__Default__Password=123
-      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/homework.pfx
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/net5services.pfx
     volumes:
       - ~/.aspnet/https:/https:ro
     build:
