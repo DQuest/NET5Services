@@ -16,8 +16,11 @@ namespace ProductService.Services
         private readonly ProductContext _productContext;
         private readonly IMapper _mapper;
 
-
-        public ProductService(IImageClient imageClient, IPriceClient priceClient, ProductContext productContext, IMapper mapper)
+        public ProductService(
+            IImageClient imageClient, 
+            IPriceClient priceClient, 
+            ProductContext productContext, 
+            IMapper mapper)
         {
             _imageClient = imageClient ?? throw new ArgumentNullException(nameof(imageClient));
             _priceClient = priceClient ?? throw new ArgumentNullException(nameof(priceClient));

@@ -28,20 +28,19 @@ namespace ProductService
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddAppAuth(Configuration);
-            services.AddServiceClients(Configuration);
-            services.AddForwardedHeadersConfiguration();
-
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo {Title = "ProductService", Version = "v1"});
             });
 
-            services.AddScoped<IProductService, ProductService.Services.ProductService>();
-
-            AddDbContext(services);
+            services.AddTransient<IProductService, Services.ProductService>();
+            
+            services.AddServiceClients(Configuration);
             AddAutoMapper(services);
+            AddDbContext(services);
             AddNewtonsoftJson(services);
+            services.AddForwardedHeadersConfiguration();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -53,14 +52,14 @@ namespace ProductService
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "ProductService v1"));
             }
-            
+
             app.UseHttpsRedirection();
 
             app.UseRouting();
 
-            app.UseAuthorization();
-                
             app.UseAuthentication();
+
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }
