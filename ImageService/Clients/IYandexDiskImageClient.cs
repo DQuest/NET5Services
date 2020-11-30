@@ -12,7 +12,7 @@ namespace ImageService.Clients
         /// <param name="authorization"></param>
         /// <returns></returns>
         [Get("/v1/disk/resources/files?media_type=image")]
-        Task<ImageModel> GetAll([Header("Authorization")] string authorization);
+        Task<ImageModel> GetAllImagesFromYandexDisk([Header("Authorization")] string authorization);
         
         /// <summary>
         /// Получить изображение с яндекс диска по указанному полному пути.
@@ -21,13 +21,13 @@ namespace ImageService.Clients
         /// <param name="authorization"></param>
         /// <returns></returns>
         [Get("/v1/disk/resources?path={fullPath}")]
-        Task<ImageModel> Get(string fullPath, [Header("Authorization")] string authorization);
+        Task<ImageModel> GetImageFromYandexDisk(string fullPath, [Header("Authorization")] string authorization);
 
         /// <summary>
         /// Загрузить файл в Диск по URL.
         /// </summary>
         /// <returns></returns>
         [Post("/v1/disk/resources/upload?path={fullPath}&url={imageUrl}&fields=href")]
-        Task<string> Upload(string imageUrl, string fullPath, [Header("Authorization")] string authorization);
+        Task<string> UploadImageToYandexDisk(string imageUrl, string fullPath, [Header("Authorization")] string authorization);
     }
 }

@@ -1,7 +1,8 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using PriceService.Models;
 
-namespace PriceService.Repositories
+namespace PriceService.Extensions
 {
     public static class PriceDbOptionsExtensions
     {

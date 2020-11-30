@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PriceService.Interfaces;
 using PriceService.Models;
-using PriceService.Repositories;
 
 namespace PriceService.Controllers
 {
@@ -15,47 +13,66 @@ namespace PriceService.Controllers
     [Route("api/prices")]
     public class PriceController : Controller
     {
-        private readonly IMapper _mapper;
         private readonly IPriceRepository _priceRepository;
 
-        public PriceController(IMapper mapper, IPriceRepository priceRepository)
+        public PriceController(IPriceRepository priceRepository)
         {
-            _mapper = mapper;
-            _priceRepository = priceRepository;
+            _priceRepository = priceRepository ?? throw new ArgumentException(nameof(priceRepository));
         }
 
+        /// <summary>
+        /// Получить все цены продукта (даже удалённые).
+        /// </summary>
+        /// <param name="productId">Id продукта</param>
+        /// <returns></returns>
         [HttpGet]
-        public async Task<IEnumerable<PriceModel>> GetAll()
+        public async Task<IEnumerable<PriceModel>> GetAllPricesForProduct(Guid productId)
         {
-            var priceEntity = await _priceRepository.GetAll();
-            return _mapper.Map<IEnumerable<PriceModel>>(priceEntity);
+            return await _priceRepository.GetAllPricesForProduct(productId);
         }
 
-        [HttpGet("GetPriceForProduct/{productId}")]
-        public async Task<PriceModel> Get(Guid productId)
+        /// <summary>
+        /// Получить актуальную стоимость продукта.
+        /// </summary>
+        /// <param name="productId">Id продукта</param>
+        /// <returns></returns>
+        [HttpGet("GetActualPriceForProduct/{productId}")]
+        public async Task<PriceModel> GetActualPriceForProduct(Guid productId)
         {
-            var priceEntity = await _priceRepository.Get(productId);
-            return _mapper.Map<PriceModel>(priceEntity);
+            return await _priceRepository.GetActualPriceForProduct(productId);
         }
 
+        /// <summary>
+        /// Установить цену продукту.
+        /// </summary>
+        /// <param name="price">Модель ценника</param>
+        /// <returns></returns>
         [HttpPost]
-        public async Task Create(PriceModel price)
+        public async Task SetNewPriceForProduct(PriceModel price)
         {
-            var priceEntity = _mapper.Map<PriceDbModel>(price);
-            await _priceRepository.Create(priceEntity);
+            await _priceRepository.SetNewPriceForProduct(price);
         }
 
+        /// <summary>
+        /// Обновить стоимость.
+        /// </summary>
+        /// <param name="price">Модель ценника</param>
+        /// <returns></returns>
         [HttpPut]
-        public async Task Update(PriceModel price)
+        public async Task UpdatePrice(PriceModel price)
         {
-            var priceEntity = _mapper.Map<PriceDbModel>(price);
-            await _priceRepository.Update(priceEntity);
+            await _priceRepository.UpdatePriceForProduct(price);
         }
 
-        [HttpDelete("{id}")]
-        public async Task Delete(Guid id)
+        /// <summary>
+        /// Удалить все цены продуктам.
+        /// </summary>
+        /// <param name="productsIds">Идентификаторы продуктов</param>
+        /// <returns></returns>
+        [HttpDelete]
+        public async Task DeletePricesForProducts(IEnumerable<Guid> productsIds)
         {
-            await _priceRepository.Delete(id);
+            await _priceRepository.DeletePricesForProducts(productsIds);
         }
     }
 }

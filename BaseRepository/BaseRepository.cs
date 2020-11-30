@@ -13,31 +13,31 @@ namespace BaseRepository
     public class BaseRepository<T> : IBaseRepository<T>
         where T : BaseEntity
     {
-        public readonly string _connectionString;
-        public readonly string _tableName;
-        public readonly IOptions<DbOptions> _dbOptions;
+        public readonly string ConnectionString;
+        public readonly string TableName;
+        public readonly IOptions<DbOptions> DbOptions;
 
         private readonly IHttpContextAccessor _httpContextAccessor;
 
         public BaseRepository(IOptions<DbOptions> dbOptions, string tableName, IHttpContextAccessor httpContextAccessor)
         {
-            _connectionString = dbOptions.Value.ConnectionString;
-            _tableName = tableName;
-            _dbOptions = dbOptions;
-            _httpContextAccessor = httpContextAccessor;
+            ConnectionString = dbOptions.Value.ConnectionString;
+            TableName = tableName;
+            DbOptions = dbOptions;
+            _httpContextAccessor = httpContextAccessor ?? throw new ArgumentException(nameof(httpContextAccessor));
         }
 
         public virtual async Task<IEnumerable<T>> GetAll()
         {
             await using var db = await GetSqlConnection();
-            return await db.QueryAsync<T>($"SELECT * FROM {_tableName} WHERE IsDeleted = 0");
+            return await db.QueryAsync<T>($"SELECT * FROM {TableName} WHERE IsDeleted = 0");
         }
 
         public virtual async Task<T> Get(Guid id)
         {
             await using var db = await GetSqlConnection();
             return await db.QueryFirstOrDefaultAsync<T>(
-                $"SELECT * FROM {_tableName} WHERE Id = @Id AND IsDeleted = 0", new {Id = id});
+                $"SELECT * FROM {TableName} WHERE Id = @Id AND IsDeleted = 0", new {Id = id});
         }
 
         public virtual async Task Create(T entity)
@@ -50,7 +50,7 @@ namespace BaseRepository
 
                 var (fields, values) = FillDbTableStructureForCreate();
 
-                await db.ExecuteAsync($"INSERT INTO {_tableName} ({fields}) VALUES ({values})", entity);
+                await db.ExecuteAsync($"INSERT INTO {TableName} ({fields}) VALUES ({values})", entity);
             }
             catch (SqlException ex)
             {
@@ -68,7 +68,7 @@ namespace BaseRepository
 
                 var parameters = FillDbTableStructureForUpdate();
 
-                await db.ExecuteAsync($"UPDATE {_tableName} SET {parameters} WHERE [Id] = @Id", entity);
+                await db.ExecuteAsync($"UPDATE {TableName} SET {parameters} WHERE [Id] = @Id", entity);
             }
             catch (SqlException ex)
             {
@@ -79,7 +79,7 @@ namespace BaseRepository
         public virtual async Task Delete(Guid id)
         {
             await using var db = await GetSqlConnection();
-            await db.ExecuteAsync($"UPDATE {_tableName} SET IsDeleted = true WHERE [Id] = @Id", new {Id = id});
+            await db.ExecuteAsync($"UPDATE {TableName} SET IsDeleted = 1 WHERE Id = @Id", new {Id = id});
         }
 
         public virtual async Task CreateMany(IEnumerable<T> entities)
@@ -92,7 +92,7 @@ namespace BaseRepository
 
                 var (fields, values) = FillDbTableStructureForCreate();
 
-                await db.ExecuteAsync($"INSERT INTO {_tableName} ({fields}) VALUES ({values})", entities);
+                await db.ExecuteAsync($"INSERT INTO {TableName} ({fields}) VALUES ({values})", entities);
             }
         }
 
@@ -106,7 +106,7 @@ namespace BaseRepository
 
                 var parameters = FillDbTableStructureForUpdate();
 
-                await db.ExecuteAsync($"UPDATE {_tableName} SET {parameters} WHERE [Id] = @Id", entities);
+                await db.ExecuteAsync($"UPDATE {TableName} SET {parameters} WHERE Id = @Id", entities);
             }
         }
 
@@ -116,25 +116,18 @@ namespace BaseRepository
 
             foreach (var id in ids)
             {
-                await db.ExecuteAsync($"UPDATE {_tableName} SET IsDeleted = 1 WHERE [Id] = @Id", new {Id = id});
+                await db.ExecuteAsync($"UPDATE {TableName} SET IsDeleted = 1 WHERE Id = @Id", new {Id = id});
             }
         }
 
-        protected async Task<SqlConnection> GetSqlConnection()
-        {
-            var db = new SqlConnection(_connectionString);
-            db.Open();
-            return db;
-        }
-        
-        private (string fields, string values) FillDbTableStructureForCreate()
+        protected (string fields, string values) FillDbTableStructureForCreate()
         {
             var fields = string.Join(", ", typeof(T).GetProperties().Select(prop => $"[{prop.Name}]"));
             var values = string.Join(", ", typeof(T).GetProperties().Select(prop => $"@{prop.Name}"));
             return (fields, values);
         }
 
-        private static string FillDbTableStructureForUpdate()
+        protected static string FillDbTableStructureForUpdate()
         {
             var notUpdateFields = new[] {"Id", "CreatedDate", "CreatedBy", "IsDeleted"};
             return string.Join(", ",
@@ -142,7 +135,7 @@ namespace BaseRepository
                     .Select(prop => $"{prop.Name} = @{prop.Name}"));
         }
 
-        private void FillBaseFields(T entity, bool isUpdateOperation = false)
+        protected void FillBaseFields(T entity, bool isUpdateOperation = false)
         {
             if (!isUpdateOperation)
             {
@@ -151,10 +144,10 @@ namespace BaseRepository
                     entity.Id = Guid.NewGuid();
                 }
 
-                entity.CreatedDate = DateTime.UtcNow;
+                entity.CreatedDate = DateTime.Now;
             }
 
-            entity.LastSavedDate = DateTime.UtcNow;
+            entity.LastSavedDate = DateTime.Now;
 
             if (Guid.TryParse(_httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier),
                 out var userId))
@@ -166,7 +159,13 @@ namespace BaseRepository
 
                 entity.LastSavedBy = userId;
             }
-            
+        }
+        
+        protected async Task<SqlConnection> GetSqlConnection()
+        {
+            var db = new SqlConnection(ConnectionString);
+            db.Open();
+            return db;
         }
     }
 }

@@ -1,6 +1,6 @@
 using BaseRepository;
 
-namespace PriceService.Repositories
+namespace PriceService.Models
 {
     public class PriceDbOptions : DbOptions
     {

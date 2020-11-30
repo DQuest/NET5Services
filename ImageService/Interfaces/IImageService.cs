@@ -1,21 +1,20 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using ImageService.Entities;
 using ImageService.Models;
 
 namespace ImageService.Interfaces
 {
     public interface IImageService
     {
-        Task<IEnumerable<ImageEntity>> GetAll(Guid productId);
+        Task<IEnumerable<ImageModel>> GetAllImagesForProduct(Guid productId);
 
-        Task<ImageEntity> Get(Guid imageId);
+        Task<ImageModel> GetImage(Guid imageId);
 
-        Task Create(UploadImagesModel uploadImagesModel);
+        Task UploadImagesForProduct(UploadImagesModel uploadImagesModel);
 
-        Task Update(ImageEntity imageEntity);
+        Task UpdateImage(ImageModel image);
 
-        Task Delete(IEnumerable<Guid> productsIds);
+        Task DeleteImagesForProducts(IEnumerable<Guid> productsIds);
     }
 }

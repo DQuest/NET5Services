@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using AutoMapper;
-using ImageService.Entities;
 using ImageService.Interfaces;
 using ImageService.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -15,13 +13,11 @@ namespace ImageService.Controllers
     [Route("api/images")]
     public class ImageController : Controller
     {
-        private readonly IMapper _mapper;
         private readonly IImageService _imageService;
 
-        public ImageController(IMapper mapper, IImageService imageService)
+        public ImageController(IImageService imageService)
         {
-            _mapper = mapper;
-            _imageService = imageService;
+            _imageService = imageService ?? throw new ArgumentException(nameof(imageService));
         }
 
         /// <summary>
@@ -30,10 +26,9 @@ namespace ImageService.Controllers
         /// <param name="productId">Идентификатор продукта</param>
         /// <returns></returns>
         [HttpGet("GetAllImages/{productId}")]
-        public async Task<IEnumerable<ImageModel>> GetAll(Guid productId)
+        public async Task<IEnumerable<ImageModel>> GetAllImagesForProduct(Guid productId)
         {
-            var imagesEntity = await _imageService.GetAll(productId);
-            return _mapper.Map<IEnumerable<ImageModel>>(imagesEntity);
+            return await _imageService.GetAllImagesForProduct(productId);
         }
 
         /// <summary>
@@ -42,10 +37,9 @@ namespace ImageService.Controllers
         /// <param name="imageId"></param>
         /// <returns></returns>
         [HttpGet("GetImages/{imageId}")]
-        public async Task<ImageModel> Get(Guid imageId)
+        public async Task<ImageModel> GetImage(Guid imageId)
         {
-            var imageEntity = await _imageService.Get(imageId);
-            return _mapper.Map<ImageModel>(imageEntity);
+            return await _imageService.GetImage(imageId);
         }
 
         /// <summary>
@@ -54,9 +48,9 @@ namespace ImageService.Controllers
         /// <param name="uploadImagesModel">Модель загрузки изображений для продукта</param>
         /// <returns></returns>
         [HttpPost]
-        public async Task Create(UploadImagesModel uploadImagesModel)
+        public async Task UploadImagesForProduct(UploadImagesModel uploadImagesModel)
         {
-            await _imageService.Create(uploadImagesModel); 
+            await _imageService.UploadImagesForProduct(uploadImagesModel); 
         }
 
         /// <summary>
@@ -65,21 +59,19 @@ namespace ImageService.Controllers
         /// <param name="image"></param>
         /// <returns></returns>
         [HttpPut]
-        public async Task Update(ImageModel image)
+        public async Task UpdateImage(ImageModel image)
         {
-            var imageEntity = _mapper.Map<ImageEntity>(image);
-            await _imageService.Update(imageEntity); 
+            await _imageService.UpdateImage(image); 
         }
 
         /// <summary>
         /// Удаление изображений для продуктов.
         /// </summary>
-        /// <param name="productsIds">Идентификаторы продуктов</param>
         /// <returns></returns>
-        [HttpDelete("{productsIds}")]
-        public async Task Delete(IEnumerable<Guid> productsIds)
+        [HttpDelete]
+        public async Task DeleteImages(IEnumerable<Guid> productsIds)
         {
-            await _imageService.Delete(productsIds);
+            await _imageService.DeleteImagesForProducts(productsIds);
         }
     }
 }

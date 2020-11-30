@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using PriceService.Configuration;
+using PriceService.Extensions;
 using PriceService.Interfaces;
 using PriceService.Repositories;
 

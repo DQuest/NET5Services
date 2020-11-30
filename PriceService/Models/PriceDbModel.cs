@@ -1,7 +1,7 @@
 using System;
 using BaseRepository;
 
-namespace PriceService.Repositories
+namespace PriceService.Models
 {
     public class PriceDbModel : BaseEntity
     {
