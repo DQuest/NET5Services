@@ -25,7 +25,7 @@ namespace ImageService.Controllers
         /// </summary>
         /// <param name="productId">Идентификатор продукта</param>
         /// <returns></returns>
-        [HttpGet("GetAllImages/{productId}")]
+        [HttpGet("GetAllImagesForProduct/{productId}")]
         public async Task<IEnumerable<ImageModel>> GetAllImagesForProduct(Guid productId)
         {
             return await _imageService.GetAllImagesForProduct(productId);

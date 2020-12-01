@@ -20,34 +20,58 @@ namespace ProductService.Controllers
             _productService = productService ?? throw new ArgumentException(nameof(productService));;
         }
 
+        /// <summary>
+        /// Получить все продукты.
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
-        public async Task<IEnumerable<ProductModel>> GetAll()
+        public async Task<IEnumerable<ProductModel>> GetAllProducts()
         {
-            return await _productService.GetAll();
+            return await _productService.GetAllProducts();
         }
 
+        /// <summary>
+        /// Получить продукт.
+        /// </summary>
+        /// <param name="productId">Id продукта</param>
+        /// <returns></returns>
         [HttpGet("{productId}")]
-        public async Task<ProductModel> Get(Guid productId)
+        public async Task<ProductModel> GetProduct(Guid productId)
         {
-            return await _productService.Get(productId);
+            return await _productService.GetProduct(productId);
         }
 
+        /// <summary>
+        /// Добавить продукт.
+        /// </summary>
+        /// <param name="product">Модель продукта</param>
+        /// <returns></returns>
         [HttpPost]
-        public async Task Create(ProductModel product)
+        public async Task CreateProduct(ProductModel product)
         {
-            await _productService.Create(product);
+            await _productService.CreateProduct(product);
         }
 
+        /// <summary>
+        /// Изменить продукт.
+        /// </summary>
+        /// <param name="product">Модель продукта</param>
+        /// <returns></returns>
         [HttpPut]
-        public async Task Update(ProductModel product)
+        public async Task UpdateProduct(ProductModel product)
         {
-            await _productService.Update(product);
+            await _productService.UpdateProduct(product);
         }
 
-        [HttpDelete("{productId}")]
-        public async Task Delete(Guid productId)
+        /// <summary>
+        /// Удалить продукты.
+        /// </summary>
+        /// <param name="productsIds">Идентификаторы продуктов</param>
+        /// <returns></returns>
+        [HttpDelete("{productsIds}")]
+        public async Task DeleteProducts(IEnumerable<Guid> productsIds)
         {
-            await _productService.Delete(productId);
+            await _productService.DeleteProducts(productsIds);
         }
     }
 }

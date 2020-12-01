@@ -7,14 +7,14 @@ namespace ProductService.Interfaces
 {
     public interface IProductService
     {
-        Task<IEnumerable<ProductModel>> GetAll();
+        Task<IEnumerable<ProductModel>> GetAllProducts();
 
-        Task<ProductModel> Get(Guid productId);
+        Task<ProductModel> GetProduct(Guid productId);
 
-        Task Create(ProductModel product);
+        Task CreateProduct(ProductModel product);
 
-        Task Update(ProductModel product);
+        Task UpdateProduct(ProductModel product);
 
-        Task Delete(Guid productId);
+        Task DeleteProducts(IEnumerable<Guid> productsIds);
     }
 }

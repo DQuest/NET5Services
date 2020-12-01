@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using ProductService.Models.Images;
 
 namespace ProductService.Models
 {
     public class ProductModel
     {
-        public long Id { get; set; }
+        public Guid Id { get; set; }
 
         /// <summary>
         /// Наименование продукта.

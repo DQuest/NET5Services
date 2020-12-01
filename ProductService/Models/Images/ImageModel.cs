@@ -1,6 +1,6 @@
 using System;
 
-namespace ProductService.Models
+namespace ProductService.Models.Images
 {
     public class ImageModel
     {

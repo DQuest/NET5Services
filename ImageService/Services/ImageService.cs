@@ -47,23 +47,23 @@ namespace ImageService.Services
         /// <returns>Список изображений</returns>
         public async Task<IEnumerable<ImageModel>> GetAllImagesForProduct(Guid productId)
         {
-            var imageEntity = await _imageContext.Image
+            var images = await _imageContext.Image
                 .Where(x => x.IsDeleted == false)
                 .Where(x => x.ProductId == productId)
                 .ToListAsync();
 
-            return _mapper.Map<IEnumerable<ImageModel>>(imageEntity);
+            return _mapper.Map<IEnumerable<ImageModel>>(images);
         }
 
         public async Task<ImageModel> GetImage(Guid imageId)
         {
-            var imageEntity = await _imageContext.Image
+            var image = await _imageContext.Image
                 .Where(x => x.IsDeleted == false)
                 .FirstOrDefaultAsync(x => x.Id == imageId);
 
-            if (imageEntity != null)
+            if (image != null)
             {
-                return _mapper.Map<ImageModel>(imageEntity);
+                return _mapper.Map<ImageModel>(image);
             }
 
             return new ImageModel();
@@ -112,8 +112,8 @@ namespace ImageService.Services
                     .Where(x => x.IsDeleted == false)
                     .FirstOrDefaultAsync(x => x.Id == image.Id);
 
-                imageEntity.Url = image.Url;
-                imageEntity.ProductId = image.ProductId;
+                imageEntity.Url = imageEntity.Url;
+                imageEntity.ProductId = imageEntity.ProductId;
                 imageEntity.LastSavedDate = DateTime.Now;
 
                 if (Guid.TryParse(_httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier),

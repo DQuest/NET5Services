@@ -37,7 +37,10 @@ namespace BaseRepository
         {
             await using var db = await GetSqlConnection();
             return await db.QueryFirstOrDefaultAsync<T>(
-                $"SELECT * FROM {TableName} WHERE Id = @Id AND IsDeleted = 0", new {Id = id});
+                $"SELECT * " +
+                $"FROM {TableName} " +
+                $"WHERE Id = @Id " +
+                $"AND IsDeleted = 0", new {Id = id});
         }
 
         public virtual async Task Create(T entity)
@@ -50,7 +53,9 @@ namespace BaseRepository
 
                 var (fields, values) = FillDbTableStructureForCreate();
 
-                await db.ExecuteAsync($"INSERT INTO {TableName} ({fields}) VALUES ({values})", entity);
+                await db.ExecuteAsync($"INSERT INTO {TableName} " +
+                                      $"({fields}) " +
+                                      $"VALUES ({values})", entity);
             }
             catch (SqlException ex)
             {
@@ -68,7 +73,9 @@ namespace BaseRepository
 
                 var parameters = FillDbTableStructureForUpdate();
 
-                await db.ExecuteAsync($"UPDATE {TableName} SET {parameters} WHERE [Id] = @Id", entity);
+                await db.ExecuteAsync($"UPDATE {TableName} " +
+                                      $"SET {parameters} " +
+                                      $"WHERE [Id] = @Id", entity);
             }
             catch (SqlException ex)
             {
@@ -79,7 +86,9 @@ namespace BaseRepository
         public virtual async Task Delete(Guid id)
         {
             await using var db = await GetSqlConnection();
-            await db.ExecuteAsync($"UPDATE {TableName} SET IsDeleted = 1 WHERE Id = @Id", new {Id = id});
+            await db.ExecuteAsync($"UPDATE {TableName} " +
+                                  $"SET IsDeleted = 1 " +
+                                  $"WHERE Id = @Id", new {Id = id});
         }
 
         public virtual async Task CreateMany(IEnumerable<T> entities)
@@ -92,7 +101,9 @@ namespace BaseRepository
 
                 var (fields, values) = FillDbTableStructureForCreate();
 
-                await db.ExecuteAsync($"INSERT INTO {TableName} ({fields}) VALUES ({values})", entities);
+                await db.ExecuteAsync($"INSERT INTO {TableName} " +
+                                      $"({fields}) " +
+                                      $"VALUES ({values})", entities);
             }
         }
 
@@ -106,7 +117,9 @@ namespace BaseRepository
 
                 var parameters = FillDbTableStructureForUpdate();
 
-                await db.ExecuteAsync($"UPDATE {TableName} SET {parameters} WHERE Id = @Id", entities);
+                await db.ExecuteAsync($"UPDATE {TableName} " +
+                                      $"SET {parameters} " +
+                                      $"WHERE Id = @Id", entities);
             }
         }
 
@@ -116,7 +129,9 @@ namespace BaseRepository
 
             foreach (var id in ids)
             {
-                await db.ExecuteAsync($"UPDATE {TableName} SET IsDeleted = 1 WHERE Id = @Id", new {Id = id});
+                await db.ExecuteAsync($"UPDATE {TableName} " +
+                                      $"SET IsDeleted = 1 " +
+                                      $"WHERE Id = @Id", new {Id = id});
             }
         }
 

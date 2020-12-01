@@ -1,11 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using ProductService.Clients;
+using ProductService.Entities;
 using ProductService.Interfaces;
 using ProductService.Models;
+using ProductService.Models.Images;
 
 namespace ProductService.Services
 {
@@ -15,55 +20,139 @@ namespace ProductService.Services
         private readonly IPriceClient _priceClient;
         private readonly ProductContext _productContext;
         private readonly IMapper _mapper;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         public ProductService(
             IImageClient imageClient, 
             IPriceClient priceClient, 
             ProductContext productContext, 
-            IMapper mapper)
+            IMapper mapper,
+            IHttpContextAccessor httpContextAccessor)
         {
             _imageClient = imageClient ?? throw new ArgumentNullException(nameof(imageClient));
             _priceClient = priceClient ?? throw new ArgumentNullException(nameof(priceClient));
             _productContext = productContext ?? throw new ArgumentNullException(nameof(productContext));
             _mapper = mapper ?? throw new ArgumentException(nameof(mapper));
+            _httpContextAccessor = httpContextAccessor ?? throw new ArgumentException(nameof(httpContextAccessor));
         }
 
-        public async Task<IEnumerable<ProductModel>> GetAll()
+        public async Task<IEnumerable<ProductModel>> GetAllProducts()
         {
-            throw new NotImplementedException();
+            var products = _productContext.Product
+                .Where(x => x.IsDeleted == false)
+                .ToListAsync();
+
+            var productsModel = _mapper.Map<IEnumerable<ProductModel>>(products);
+
+            foreach (var product in productsModel)
+            {
+                product.Images = await _imageClient.GetAllImagesForProduct(product.Id);
+                product.Prices = await _priceClient.GetActualPriceForProduct(product.Id);
+            }
+
+            return productsModel;
         }
 
-        public async Task<ProductModel> Get(Guid productId)
+        public async Task<ProductModel> GetProduct(Guid productId)
         {
             var productEntity = _productContext.Product
                 .Where(x => x.IsDeleted == false)
                 .FirstOrDefault(x => x.Id == productId);
 
-            if (productEntity == null)
-            {
-                throw new ArgumentException("Продукт не найден");
-            }
-
             var product = _mapper.Map<ProductModel>(productEntity);
-            product.Images = await _imageClient.GetAll(productId);
-            product.Prices = await _priceClient.Get(productId);
+            product.Images = await _imageClient.GetAllImagesForProduct(productId);
+            product.Prices = await _priceClient.GetActualPriceForProduct(productId);
 
             return product;
         }
 
-        public async Task Create(ProductModel entity)
+        public async Task CreateProduct(ProductModel product)
         {
-            throw new NotImplementedException();
+            var productEntity = _mapper.Map<ProductEntity>(product);
+            
+            Guid.TryParse(_httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier),
+                out var userId);
+
+            productEntity.Id = new Guid();
+            productEntity.CreatedBy = userId;
+            productEntity.LastSavedBy = userId;
+            productEntity.CreatedDate = DateTime.Now;
+            productEntity.LastSavedDate = DateTime.Now;
+
+            await UploadImagesIfExist(product);
+            await SetPriceIfExist(product);
+
+            await _productContext.Product.AddRangeAsync(productEntity);
+            await _productContext.SaveChangesAsync();
         }
 
-        public async Task Update(ProductModel entity)
+        public async Task UpdateProduct(ProductModel product)
         {
-            throw new NotImplementedException();
+            var productEntity = _mapper.Map<ProductEntity>(product);
+            
+            productEntity.LastSavedDate = DateTime.Now;
+
+            if (Guid.TryParse(_httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier),
+                out var userId))
+            {
+                productEntity.LastSavedBy = userId;
+            }
+
+            await UploadImagesIfExist(product);
+            await SetPriceIfExist(product);
+
+            _productContext.Product.Update(productEntity);
+            await _productContext.SaveChangesAsync();
         }
 
-        public async Task Delete(Guid id)
+        public async Task DeleteProducts(IEnumerable<Guid> productsIds)
         {
-            throw new NotImplementedException();
+            var products = await _productContext.Product
+                .Where(x => x.IsDeleted == false)
+                .Where(x => productsIds.Contains(x.Id))
+                .ToListAsync();
+
+            Guid.TryParse(_httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier),
+                out var userId);
+
+            var dateTimeNow = DateTime.Now;
+            foreach (var product in products)
+            {
+                product.LastSavedBy = userId;
+                product.LastSavedDate = dateTimeNow;
+                product.IsDeleted = true;
+            }
+            
+            // todo в теории, если навешивать ограничение внешнего ключа в БД на дочерние для продукта сущности (изображения и цены)
+            // todo то придётся сначала убирать их, перед удаление продукта. Пока ограничения нет, удаление цен и изобрежений не производим
+
+            _productContext.Product.RemoveRange(products);
+            await _productContext.SaveChangesAsync();
+        }
+        
+        private async Task SetPriceIfExist(ProductModel product)
+        {
+            if (product.Prices != null)
+            {
+                await _priceClient.SetNewPriceForProduct(new PriceModel
+                {
+                    ProductId = product.Id,
+                    DiscountPrice = product.Prices.DiscountPrice,
+                    SellPrice = product.Prices.SellPrice
+                });
+            }
+        }
+
+        private async Task UploadImagesIfExist(ProductModel product)
+        {
+            if (product.Images.Any())
+            {
+                await _imageClient.UploadImagesForProduct(new UploadImagesModel
+                {
+                    ProductId = product.Id,
+                    ImageUrls = product.Images.Select(x => x.Url)
+                });
+            }
         }
     }
 }

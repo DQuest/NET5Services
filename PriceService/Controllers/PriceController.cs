@@ -59,7 +59,7 @@ namespace PriceService.Controllers
         /// <param name="price">Модель ценника</param>
         /// <returns></returns>
         [HttpPut]
-        public async Task UpdatePrice(PriceModel price)
+        public async Task UpdatePriceForProduct(PriceModel price)
         {
             await _priceRepository.UpdatePriceForProduct(price);
         }
