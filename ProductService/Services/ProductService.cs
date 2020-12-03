@@ -97,7 +97,7 @@ namespace ProductService.Services
             Guid.TryParse(_httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier),
                 out var userId);
 
-            productEntity.Id = new Guid();
+            productEntity.Id = product.Id = new Guid();
             productEntity.CreatedBy = userId;
             productEntity.LastSavedBy = userId;
             productEntity.CreatedDate = DateTime.Now;
