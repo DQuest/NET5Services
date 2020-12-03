@@ -44,7 +44,7 @@ namespace ProductService.Services
             
             if (!products.Any())
             {
-                throw new ArgumentException("Продукты не найден в БД");
+                throw new ArgumentException("Продукты не найдены в БД");
             }
 
             var productsModel = _mapper.Map<IEnumerable<ProductModel>>(products);
