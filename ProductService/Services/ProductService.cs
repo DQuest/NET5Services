@@ -38,9 +38,14 @@ namespace ProductService.Services
 
         public async Task<IEnumerable<ProductModel>> GetAllProducts()
         {
-            var products = _productContext.Product
+            var products = await _productContext.Product
                 .Where(x => x.IsDeleted == false)
                 .ToListAsync();
+            
+            if (!products.Any())
+            {
+                throw new ArgumentException("Продукты не найден в БД");
+            }
 
             var productsModel = _mapper.Map<IEnumerable<ProductModel>>(products);
 
@@ -55,9 +60,14 @@ namespace ProductService.Services
 
         public async Task<ProductModel> GetProduct(Guid productId)
         {
-            var productEntity = _productContext.Product
+            var productEntity = await _productContext.Product
                 .Where(x => x.IsDeleted == false)
-                .FirstOrDefault(x => x.Id == productId);
+                .FirstOrDefaultAsync(x => x.Id == productId);
+
+            if (productEntity == null)
+            {
+                throw new ArgumentException("Продукт не найден в БД");
+            }
 
             var product = _mapper.Map<ProductModel>(productEntity);
             product.Images = await _imageClient.GetAllImagesForProduct(productId);
