@@ -68,7 +68,7 @@ namespace ProductService.Controllers
         /// </summary>
         /// <param name="productsIds">Идентификаторы продуктов</param>
         /// <returns></returns>
-        [HttpDelete("{productsIds}")]
+        [HttpDelete]
         public async Task DeleteProducts(IEnumerable<Guid> productsIds)
         {
             await _productService.DeleteProducts(productsIds);

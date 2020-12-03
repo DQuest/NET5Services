@@ -51,8 +51,15 @@ namespace ProductService.Services
 
             foreach (var product in productsModel)
             {
-                product.Images = await _imageClient.GetAllImagesForProduct(product.Id);
-                product.Prices = await _priceClient.GetActualPriceForProduct(product.Id);
+                try
+                {
+                    product.Images = await _imageClient.GetAllImagesForProduct(product.Id);
+                    product.Prices = await _priceClient.GetActualPriceForProduct(product.Id);
+                }
+                catch (Exception ex)
+                {
+                    // todo нужна какая-то обёртка, чтобы не сыпать везде try{}catch{} блоки
+                }
             }
 
             return productsModel;
@@ -70,8 +77,15 @@ namespace ProductService.Services
             }
 
             var product = _mapper.Map<ProductModel>(productEntity);
-            product.Images = await _imageClient.GetAllImagesForProduct(productId);
-            product.Prices = await _priceClient.GetActualPriceForProduct(productId);
+            try
+            {
+                product.Images = await _imageClient.GetAllImagesForProduct(productId);
+                product.Prices = await _priceClient.GetActualPriceForProduct(productId);
+            }
+            catch (Exception ex)
+            {
+                // todo нужна какая-то обёртка, чтобы не сыпать везде try{}catch{} блоки
+            }
 
             return product;
         }
@@ -122,6 +136,11 @@ namespace ProductService.Services
                 .Where(x => productsIds.Contains(x.Id))
                 .ToListAsync();
 
+            if (!products.Any())
+            {
+                throw new ArgumentException("Не найдены продукты для удаления");
+            }
+
             Guid.TryParse(_httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier),
                 out var userId);
 
@@ -136,7 +155,7 @@ namespace ProductService.Services
             // todo в теории, если навешивать ограничение внешнего ключа в БД на дочерние для продукта сущности (изображения и цены)
             // todo то придётся сначала убирать их, перед удаление продукта. Пока ограничения нет, удаление цен и изобрежений не производим
 
-            _productContext.Product.RemoveRange(products);
+            _productContext.Product.UpdateRange(products);
             await _productContext.SaveChangesAsync();
         }
         
@@ -144,12 +163,19 @@ namespace ProductService.Services
         {
             if (product.Prices != null)
             {
-                await _priceClient.SetNewPriceForProduct(new PriceModel
+                try
                 {
-                    ProductId = product.Id,
-                    DiscountPrice = product.Prices.DiscountPrice,
-                    SellPrice = product.Prices.SellPrice
-                });
+                    await _priceClient.SetNewPriceForProduct(new PriceModel
+                    {
+                        ProductId = product.Id,
+                        DiscountPrice = product.Prices.DiscountPrice,
+                        SellPrice = product.Prices.SellPrice
+                    });
+                }
+                catch (Exception ex)
+                {
+                    // todo нужна какая-то обёртка, чтобы не сыпать везде try{}catch{} блоки
+                }
             }
         }
 
@@ -157,11 +183,18 @@ namespace ProductService.Services
         {
             if (product.Images.Any())
             {
-                await _imageClient.UploadImagesForProduct(new UploadImagesModel
+                try
                 {
-                    ProductId = product.Id,
-                    ImageUrls = product.Images.Select(x => x.Url)
-                });
+                    await _imageClient.UploadImagesForProduct(new UploadImagesModel
+                    {
+                        ProductId = product.Id,
+                        ImageUrls = product.Images.Select(x => x.Url)
+                    });
+                }
+                catch (Exception ex)
+                {
+                    // todo нужна какая-то обёртка, чтобы не сыпать везде try{}catch{} блоки
+                }
             }
         }
     }
