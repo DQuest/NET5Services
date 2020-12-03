@@ -37,10 +37,11 @@ namespace ProductService
             services.AddTransient<IProductService, Services.ProductService>();
             
             services.AddServiceClients(Configuration);
+            services.AddForwardedHeadersConfiguration();
+
             AddAutoMapper(services);
             AddDbContext(services);
             AddNewtonsoftJson(services);
-            services.AddForwardedHeadersConfiguration();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
