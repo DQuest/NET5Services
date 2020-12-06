@@ -11,6 +11,7 @@ using ImageService.Interfaces;
 using ImageService.Models;
 using ImageService.Models.YandexDisk;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
@@ -27,163 +28,232 @@ namespace ImageService.Services
         private readonly IMapper _mapper;
 
         public ImageService(
-            ImageContext imageContext, 
-            IYandexDiskImageClient yandexDiskImageClient, 
-            IHttpContextAccessor httpContextAccessor, 
+            ImageContext imageContext,
+            IYandexDiskImageClient yandexDiskImageClient,
+            IHttpContextAccessor httpContextAccessor,
             IConfiguration cfg,
             IMapper mapper)
         {
             _token = cfg.GetValue<string>("YandexToken");
             _imageContext = imageContext ?? throw new ArgumentException(nameof(imageContext));
-            _yandexDiskImageClient = yandexDiskImageClient ?? throw new ArgumentException(nameof(yandexDiskImageClient));;
+            _yandexDiskImageClient = yandexDiskImageClient ?? throw new ArgumentException(nameof(yandexDiskImageClient));
             _httpContextAccessor = httpContextAccessor ?? throw new ArgumentException(nameof(httpContextAccessor));
-            _mapper = mapper;
+            _mapper = mapper ?? throw new ArgumentException(nameof(mapper));
         }
-
-        /// <summary>
-        /// Получить все изображения для определённого продукта.
-        /// </summary>
-        /// <param name="productId">Id продукта</param>
-        /// <returns>Список изображений</returns>
-        public async Task<IEnumerable<ImageModel>> GetAllImagesForProduct(Guid productId)
+        
+        public async Task<ActionResult<ImageModel>> Get(Guid id)
         {
-            var images = await _imageContext.Image
-                .Where(x => x.IsDeleted == false)
-                .Where(x => x.ProductId == productId)
-                .ToListAsync();
-
-            return _mapper.Map<IEnumerable<ImageModel>>(images);
-        }
-
-        public async Task<ImageModel> GetImage(Guid imageId)
-        {
-            var image = await _imageContext.Image
-                .Where(x => x.IsDeleted == false)
-                .FirstOrDefaultAsync(x => x.Id == imageId);
-
-            if (image != null)
+            if (id == Guid.Empty)
             {
-                return _mapper.Map<ImageModel>(image);
+                return new BadRequestObjectResult("Отсутствует идентификатор изображения");
             }
 
-            return new ImageModel();
+            var image = await _imageContext.Image
+                .FirstOrDefaultAsync(x => x.Id == id);
+
+            if (image == null)
+            {
+                return new NotFoundObjectResult("Изображение не найдено в БД");
+            }
+
+            return new ObjectResult(_mapper.Map<ImageModel>(image));
         }
 
-        /// <summary>
-        /// Залить изображения для продукта и записать ссылки в БД.
-        /// </summary>
-        /// <param name="uploadImagesModel">Модель для заливки изображений для продукта</param>
-        /// <returns></returns>
-        public async Task UploadImagesForProduct(UploadImagesModel uploadImagesModel)
+        public IQueryable<ImageEntity> GetAll()
         {
-            var dateTimeNow = DateTime.Now;
+            return _imageContext.Image.AsQueryable();
+        }
 
-            var imagesHrefs = await UploadImagesToYandexDisk(uploadImagesModel.ImageUrls);
+        public async Task<ActionResult> Create(ImageModel image)
+        {
+            if (image == null)
+            {
+                return new BadRequestObjectResult("Отсутствует изображение для добавления");
+            }
 
-            Guid.TryParse(_httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier),
-                out var userId);
+            var imageHref = await UploadImageToYandexDisk(image.Url);
 
-            var images = imagesHrefs.Select(imageUrl => new ImageEntity
+            var now = DateTime.Now;
+            var imageEntity = new ImageEntity
+            {
+                Id = Guid.NewGuid(),
+                CreatedDate = now,
+                LastSavedDate = now,
+                ProductId = image.ProductId,
+                Url = imageHref
+            };
+
+            await _imageContext.Image.AddAsync(imageEntity);
+            await _imageContext.SaveChangesAsync();
+
+            return new OkResult();
+        }
+
+        public async Task<ActionResult> CreateMany(IEnumerable<ImageModel> images)
+        {
+            if (!images.Any())
+            {
+                return new BadRequestObjectResult("Отсутствуют изображения для добавления");
+            }
+
+            var imagesHrefs = new List<string>();
+            foreach (var image in images)
+            {
+                imagesHrefs.Add(await UploadImageToYandexDisk(image.Url));
+            }
+
+            var now = DateTime.Now;
+            var productId = images.Select(x => x.ProductId)
+                .FirstOrDefault();
+
+            var imagesEntity = imagesHrefs.Select(
+                imageUrl => new ImageEntity
                 {
                     Id = Guid.NewGuid(),
-                    CreatedDate = dateTimeNow,
-                    LastSavedDate = dateTimeNow,
-                    CreatedBy = userId,
-                    LastSavedBy = userId,
-                    ProductId = uploadImagesModel.ProductId,
+                    CreatedDate = now,
+                    LastSavedDate = now,
+                    ProductId = productId,
                     Url = imageUrl
-                })
-                .ToList();
+                });
 
-            await _imageContext.Image.AddRangeAsync(images);
+            await _imageContext.Image.AddRangeAsync(imagesEntity);
             await _imageContext.SaveChangesAsync();
+
+            return new OkResult();
         }
 
-        /// <summary>
-        /// Обновление информации об изображении в БД.
-        /// </summary>
-        /// <param name="image">Модель изображения</param>
-        /// <returns></returns>
-        public async Task UpdateImage(ImageModel image)
+        public async Task<ActionResult> Update(ImageModel image)
         {
-            try
+            if (image == null)
             {
-                var imageEntity = await _imageContext.Image
-                    .Where(x => x.IsDeleted == false)
-                    .FirstOrDefaultAsync(x => x.Id == image.Id);
+                return new BadRequestObjectResult("Отсутствует изображение для изменения");
+            }
 
-                imageEntity.Url = imageEntity.Url;
-                imageEntity.ProductId = imageEntity.ProductId;
-                imageEntity.LastSavedDate = DateTime.Now;
+            var imageEntity = await _imageContext.Image
+                .Where(x => x.Id == image.Id)
+                .FirstOrDefaultAsync();
+            
+            if (imageEntity == null)
+            {
+                return new NotFoundObjectResult("Изображение не найдено в БД");
+            }
 
-                if (Guid.TryParse(_httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier),
-                    out var userId))
+            imageEntity.ProductId = image.ProductId;
+            imageEntity.Url = image.Url;
+            imageEntity.LastSavedDate = DateTime.Now;
+            imageEntity.IsDeleted = image.IsDeleted;
+
+            _imageContext.Image.Update(imageEntity);
+            await _imageContext.SaveChangesAsync();
+
+            return new OkResult();
+        }
+
+        public async Task<ActionResult> UpdateMany(IEnumerable<ImageModel> images)
+        {
+            if (!images.Any())
+            {
+                return new BadRequestObjectResult("Отсутствуют изображения для изменения");
+            }
+
+            var imagesIds = images
+                .Select(x => x.Id)
+                .ToArray();
+            
+            var imageEntity = await _imageContext.Image
+                .Where(x => imagesIds.Contains(x.Id))
+                .ToDictionaryAsync(x => x.Id);
+
+            if (!imageEntity.Any())
+            {
+                return new NotFoundObjectResult("Изображения не найдены в БД");
+            }
+
+            foreach (var image in images)
+            {
+                if (imageEntity.TryGetValue(image.Id, out var entity))
                 {
-                    imageEntity.LastSavedBy = userId;
-                }
+                    entity.ProductId = image.ProductId;
+                    entity.Url = image.Url;
+                    entity.LastSavedDate = DateTime.Now;
+                    entity.IsDeleted = image.IsDeleted;
+                };
+            }
 
-                _imageContext.Image.Update(imageEntity);
-                await _imageContext.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
+            _imageContext.Image.UpdateRange(imageEntity.Values);
+            await _imageContext.SaveChangesAsync();
+
+            return new OkResult();
         }
 
-        /// <summary>
-        /// Удалить все изображения связанные с продкутом.
-        /// </summary>
-        /// <param name="productsIds">Id продукта</param>
-        /// <returns></returns>
-        public async Task DeleteImagesForProducts(IEnumerable<Guid> productsIds)
+        public async Task<ActionResult> Delete(Guid id)
         {
-            var productsImages = await _imageContext.Image
+            if (id == Guid.Empty)
+            {
+                return new BadRequestObjectResult("Отсутствует идентификатор изображения");
+            }
+
+            var imageEntity = await _imageContext.Image
                 .Where(x => x.IsDeleted == false)
-                .Where(x => productsIds.Contains(x.ProductId))
+                .FirstOrDefaultAsync(x => x.Id == id);
+
+            if (imageEntity == null)
+            {
+                return new NotFoundObjectResult("Изображение не найдено в БД");
+            }
+
+            imageEntity.LastSavedDate = DateTime.Now;
+            imageEntity.IsDeleted = true;
+
+            _imageContext.Image.Update(imageEntity);
+            await _imageContext.SaveChangesAsync();
+
+            return new OkResult();
+        }
+
+        public async Task<ActionResult> DeleteMany(IEnumerable<Guid> ids)
+        {
+            if (!ids.Any())
+            {
+                return new BadRequestObjectResult("Отсутствуют идентификаторы изображений");
+            }
+
+            var imageEntity = await _imageContext.Image
+                .Where(x => x.IsDeleted == false)
+                .Where(x => ids.Contains(x.Id))
                 .ToListAsync();
 
-            Guid.TryParse(_httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier),
-                out var userId);
-
-            var dateTimeNow = DateTime.Now;
-            foreach (var image in productsImages)
+            if (!imageEntity.Any())
             {
-                image.LastSavedBy = userId;
-                image.LastSavedDate = dateTimeNow;
+                return new NotFoundObjectResult("Изображения не найдены в БД");
+            }
+
+            foreach (var image in imageEntity)
+            {
+                image.LastSavedDate = DateTime.Now;
                 image.IsDeleted = true;
             }
 
-            _imageContext.Image.UpdateRange(productsImages);
+            _imageContext.Image.UpdateRange(imageEntity);
             await _imageContext.SaveChangesAsync();
+
+            return new OkResult();
         }
-        
-        /// <summary>
-        /// Заливка изображений на яндекс диск.
-        /// </summary>
-        /// <param name="imagesUrls">Ссылки на изображения со сторонних ресурсов</param>
-        /// <returns>Ссылки на изображения на яндекс диске</returns>
-        /// <exception cref="ArgumentException"></exception>
-        private async Task<List<string>> UploadImagesToYandexDisk(IEnumerable<string> imagesUrls)
+
+        private async Task<string> UploadImageToYandexDisk(string imageUrl)
         {
-            var imagesHrefs = new List<string>();
             try
             {
-                foreach (var imageUrl in imagesUrls)
-                {
-                    var fullPath = GetFullPathForImage(imageUrl);
-                    var response = await _yandexDiskImageClient.UploadImageToYandexDisk(imageUrl, fullPath, _token);
-                    var deserializedResponse = JsonConvert.DeserializeObject<UploadResponse>(response);
+                var fullPath = GetFullPathForImage(imageUrl);
+                var response = await _yandexDiskImageClient.UploadImageToYandexDisk(imageUrl, fullPath, _token);
+                var deserializedResponse = JsonConvert.DeserializeObject<UploadResponse>(response);
 
-                    imagesHrefs.Add(deserializedResponse.Href);
-                }
+                return deserializedResponse.Href;
             }
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }
-
-            return imagesHrefs;
         }
 
         /// <summary>

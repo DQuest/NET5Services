@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using ImageService.Entities;
 using ImageService.Interfaces;
 using ImageService.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -8,9 +10,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ImageService.Controllers
 {
-    [ApiController]
     [Authorize]
-    [Route("api/images")]
+    [ApiController]
+    [Route("[controller]")]
     public class ImageController : Controller
     {
         private readonly IImageService _imageService;
@@ -21,57 +23,90 @@ namespace ImageService.Controllers
         }
 
         /// <summary>
-        /// Получение изображений для продукта.
+        /// Получение изображений.
         /// </summary>
-        /// <param name="productId">Идентификатор продукта</param>
         /// <returns></returns>
-        [HttpGet("GetAllImagesForProduct/{productId}")]
-        public async Task<IEnumerable<ImageModel>> GetAllImagesForProduct(Guid productId)
+        [HttpGet]
+        public IQueryable<ImageEntity> GetAll()
         {
-            return await _imageService.GetAllImagesForProduct(productId);
+            return _imageService.GetAll();
+        }
+        
+        /// <summary>
+        /// Получение определённого изображения.
+        /// </summary>
+        /// <param name="id">Id изображения</param>
+        /// <returns></returns>
+        [HttpGet("{id}")]
+        public async Task<ActionResult<ImageModel>> Get(Guid id)
+        {
+            return await _imageService.Get(id);
         }
 
         /// <summary>
-        /// Получение определённого изображения todo: для продукта.
+        /// Добавить изображение.
         /// </summary>
-        /// <param name="imageId"></param>
-        /// <returns></returns>
-        [HttpGet("GetImages/{imageId}")]
-        public async Task<ImageModel> GetImage(Guid imageId)
-        {
-            return await _imageService.GetImage(imageId);
-        }
-
-        /// <summary>
-        /// Добавление изображений для продукта.
-        /// </summary>
-        /// <param name="uploadImagesModel">Модель загрузки изображений для продукта</param>
+        /// <param name="image"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task UploadImagesForProduct(UploadImagesModel uploadImagesModel)
+        public async Task<ActionResult> Create(ImageModel image)
         {
-            await _imageService.UploadImagesForProduct(uploadImagesModel); 
+            return await _imageService.Create(image);
         }
 
         /// <summary>
-        /// Обновление информации об изображении.
+        /// Добавить изображения.
+        /// </summary>
+        /// <param name="images"></param>
+        /// <returns></returns>
+        [HttpPost("CreateMany")]
+        public async Task<ActionResult> CreateMany(IEnumerable<ImageModel> images)
+        {
+            return await _imageService.CreateMany(images);
+        }
+
+        /// <summary>
+        /// Обновить информацию об изображении.
         /// </summary>
         /// <param name="image"></param>
         /// <returns></returns>
         [HttpPut]
-        public async Task UpdateImage(ImageModel image)
+        public async Task<ActionResult> Update(ImageModel image)
         {
-            await _imageService.UpdateImage(image); 
+            return await _imageService.Update(image);
+        }
+        
+        /// <summary>
+        /// Обновить информацию об изображениях.
+        /// </summary>
+        /// <param name="images"></param>
+        /// <returns></returns>
+        [HttpPut("UpdateMany")]
+        public async Task<ActionResult> UpdateMany(IEnumerable<ImageModel> images)
+        {
+            return await _imageService.UpdateMany(images);
         }
 
         /// <summary>
-        /// Удаление изображений для продуктов.
+        /// Удалить изображение.
         /// </summary>
+        /// <param name="id"></param>
         /// <returns></returns>
         [HttpDelete]
-        public async Task DeleteImages(IEnumerable<Guid> productsIds)
+        public async Task<ActionResult> Delete(Guid id)
         {
-            await _imageService.DeleteImagesForProducts(productsIds);
+            return await _imageService.Delete(id);
+        }
+
+        /// <summary>
+        /// Удалить изображения.
+        /// </summary>
+        /// <param name="ids"></param>
+        /// <returns></returns>
+        [HttpDelete("DeleteMany")]
+        public async Task<ActionResult> DeleteMany(IEnumerable<Guid> ids)
+        {
+            return await _imageService.DeleteMany(ids);
         }
     }
 }

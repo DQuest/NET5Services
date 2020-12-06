@@ -1,20 +1,29 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using ImageService.Entities;
 using ImageService.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ImageService.Interfaces
 {
     public interface IImageService
     {
-        Task<IEnumerable<ImageModel>> GetAllImagesForProduct(Guid productId);
+        IQueryable<ImageEntity> GetAll();
+        
+        Task<ActionResult<ImageModel>> Get(Guid id);
+        
+        Task<ActionResult> Create(ImageModel image);
 
-        Task<ImageModel> GetImage(Guid imageId);
+        Task<ActionResult> CreateMany(IEnumerable<ImageModel> images);
 
-        Task UploadImagesForProduct(UploadImagesModel uploadImagesModel);
+        Task<ActionResult> Update(ImageModel image);
+        
+        Task<ActionResult> UpdateMany(IEnumerable<ImageModel> images);
 
-        Task UpdateImage(ImageModel image);
+        Task<ActionResult> Delete(Guid id);
 
-        Task DeleteImagesForProducts(IEnumerable<Guid> productsIds);
+        Task<ActionResult> DeleteMany(IEnumerable<Guid> ids);
     }
 }
