@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -8,9 +9,9 @@ using PriceService.Models;
 
 namespace PriceService.Controllers
 {
-    [ApiController]
     [Authorize]
-    [Route("api/prices")]
+    [ApiController]
+    [Route("[controller]")]
     public class PriceController : Controller
     {
         private readonly IPriceRepository _priceRepository;
@@ -21,58 +22,90 @@ namespace PriceService.Controllers
         }
 
         /// <summary>
-        /// Получить все цены продукта (даже удалённые).
+        /// Получение всех цен.
         /// </summary>
-        /// <param name="productId">Id продукта</param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<IEnumerable<PriceModel>> GetAllPricesForProduct(Guid productId)
+        public async Task<ActionResult<IEnumerable<PriceModel>>> GetAll()
         {
-            return await _priceRepository.GetAllPricesForProduct(productId);
+            return await _priceRepository.GetAll();
         }
-
+        
         /// <summary>
-        /// Получить актуальную стоимость продукта.
+        /// Получение стоимости.
         /// </summary>
-        /// <param name="productId">Id продукта</param>
+        /// <param name="id">Id ценника</param>
         /// <returns></returns>
-        [HttpGet("GetActualPriceForProduct/{productId}")]
-        public async Task<PriceModel> GetActualPriceForProduct(Guid productId)
+        [HttpGet("{id}")]
+        public async Task<ActionResult<PriceModel>> Get(Guid id)
         {
-            return await _priceRepository.GetActualPriceForProduct(productId);
+            return await _priceRepository.Get(id);
         }
 
         /// <summary>
-        /// Установить цену продукту.
+        /// Добавить стоимость.
         /// </summary>
-        /// <param name="price">Модель ценника</param>
+        /// <param name="price"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task SetNewPriceForProduct(PriceModel price)
+        public async Task<ActionResult> Create(PriceModel price)
         {
-            await _priceRepository.SetNewPriceForProduct(price);
+            return await _priceRepository.Create(price);
+        }
+
+        /// <summary>
+        /// Добавить цены.
+        /// </summary>
+        /// <param name="prices"></param>
+        /// <returns></returns>
+        [HttpPost("CreateMany")]
+        public async Task<ActionResult> CreateMany(IEnumerable<PriceModel> prices)
+        {
+            return await _priceRepository.CreateMany(prices);
         }
 
         /// <summary>
         /// Обновить стоимость.
         /// </summary>
-        /// <param name="price">Модель ценника</param>
+        /// <param name="price"></param>
         /// <returns></returns>
         [HttpPut]
-        public async Task UpdatePriceForProduct(PriceModel price)
+        public async Task<ActionResult> Update(PriceModel price)
         {
-            await _priceRepository.UpdatePriceForProduct(price);
+            return await _priceRepository.Update(price);
+        }
+        
+        /// <summary>
+        /// Обновить цены.
+        /// </summary>
+        /// <param name="prices"></param>
+        /// <returns></returns>
+        [HttpPut("UpdateMany")]
+        public async Task<ActionResult> UpdateMany(IEnumerable<PriceModel> prices)
+        {
+            return await _priceRepository.UpdateMany(prices);
         }
 
         /// <summary>
-        /// Удалить все цены продуктам.
+        /// Удалить стоимость.
         /// </summary>
-        /// <param name="productsIds">Идентификаторы продуктов</param>
+        /// <param name="id"></param>
         /// <returns></returns>
         [HttpDelete]
-        public async Task DeletePricesForProducts(IEnumerable<Guid> productsIds)
+        public async Task<ActionResult> Delete(Guid id)
         {
-            await _priceRepository.DeletePricesForProducts(productsIds);
+            return await _priceRepository.Delete(id);
+        }
+
+        /// <summary>
+        /// Удалить цены.
+        /// </summary>
+        /// <param name="ids"></param>
+        /// <returns></returns>
+        [HttpDelete("DeleteMany")]
+        public async Task<ActionResult> DeleteMany(IEnumerable<Guid> ids)
+        {
+            return await _priceRepository.DeleteMany(ids);
         }
     }
 }

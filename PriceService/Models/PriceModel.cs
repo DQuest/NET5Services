@@ -13,5 +13,7 @@ namespace PriceService.Models
         public decimal DiscountPrice { get; set; }
         
         public bool IsLast { get; set; }
+        
+        public bool IsDeleted { get; set; }
     }
 }

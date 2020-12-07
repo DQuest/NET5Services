@@ -39,7 +39,6 @@ namespace ImageService
             });
 
             services.AddTransient<IImageService, Services.ImageService>();
-            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             SetupRefit(services);
             AddAutoMapper(services);

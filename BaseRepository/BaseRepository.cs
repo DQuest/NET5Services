@@ -17,20 +17,17 @@ namespace BaseRepository
         public readonly string TableName;
         public readonly IOptions<DbOptions> DbOptions;
 
-        private readonly IHttpContextAccessor _httpContextAccessor;
-
-        public BaseRepository(IOptions<DbOptions> dbOptions, string tableName, IHttpContextAccessor httpContextAccessor)
+        public BaseRepository(IOptions<DbOptions> dbOptions, string tableName)
         {
             ConnectionString = dbOptions.Value.ConnectionString;
             TableName = tableName;
             DbOptions = dbOptions;
-            _httpContextAccessor = httpContextAccessor ?? throw new ArgumentException(nameof(httpContextAccessor));
         }
 
         public virtual async Task<IEnumerable<T>> GetAll()
         {
             await using var db = await GetSqlConnection();
-            return await db.QueryAsync<T>($"SELECT * FROM {TableName} WHERE IsDeleted = 0");
+            return await db.QueryAsync<T>($"SELECT * FROM {TableName}");
         }
 
         public virtual async Task<T> Get(Guid id)
@@ -39,8 +36,7 @@ namespace BaseRepository
             return await db.QueryFirstOrDefaultAsync<T>(
                 $"SELECT * " +
                 $"FROM {TableName} " +
-                $"WHERE Id = @Id " +
-                $"AND IsDeleted = 0", new {Id = id});
+                $"WHERE Id = @Id", new {Id = id});
         }
 
         public virtual async Task Create(T entity)
@@ -164,16 +160,16 @@ namespace BaseRepository
 
             entity.LastSavedDate = DateTime.Now;
 
-            if (Guid.TryParse(_httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier),
-                out var userId))
-            {
-                if (!isUpdateOperation)
-                {
-                    entity.CreatedBy = userId;
-                }
-
-                entity.LastSavedBy = userId;
-            }
+            // if (Guid.TryParse(_httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier),
+            //     out var userId))
+            // {
+            //     if (!isUpdateOperation)
+            //     {
+            //         entity.CreatedBy = userId;
+            //     }
+            //
+            //     entity.LastSavedBy = userId;
+            // }
         }
         
         protected async Task<SqlConnection> GetSqlConnection()

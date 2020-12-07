@@ -8,74 +8,131 @@ using Microsoft.Extensions.Options;
 using PriceService.Interfaces;
 using BaseRepository;
 using Dapper;
+using Microsoft.AspNetCore.Hosting.StaticWebAssets;
+using Microsoft.AspNetCore.Mvc;
 using PriceService.Models;
 
 namespace PriceService.Repositories
 {
     public class PriceRepository : BaseRepository<PriceDbModel>, IPriceRepository
     {
-        private static string TableName => "Price";
-        
+        private static string TableName = "Price";
+
         private readonly IMapper _mapper;
 
-        public PriceRepository(
-            IOptions<PriceDbOptions> dbOptions, 
-            IHttpContextAccessor httpContextAccessor,
-            IMapper mapper) 
-            : base(dbOptions, TableName, httpContextAccessor)
+        public PriceRepository(IOptions<PriceDbOptions> dbOptions, IMapper mapper)
+            : base(dbOptions, TableName)
         {
             _mapper = mapper ?? throw new ArgumentException(nameof(mapper));
         }
 
-        public async Task<IEnumerable<PriceModel>> GetAllPricesForProduct(Guid productId)
+        public async Task<ActionResult<IEnumerable<PriceModel>>> GetAll()
         {
-            await using var db = await GetSqlConnection();
-            var priceEntity = await db.QueryAsync<PriceDbModel>(
-                $"SELECT * " +
-                $"FROM {TableName} " +
-                $"WHERE ProductId = @ProductId", new {ProductId = productId});
+            var prices = await base.GetAll();
 
-            return _mapper.Map<IEnumerable<PriceModel>>(priceEntity);
+            if (!prices.Any())
+            {
+                return new NotFoundObjectResult("Цены не найдены в БД");
+            }
+
+            return new OkObjectResult(_mapper.Map<IEnumerable<PriceModel>>(prices));
         }
 
-        public async Task<PriceModel> GetActualPriceForProduct(Guid productId)
+        public async Task<ActionResult<PriceModel>> Get(Guid id)
         {
-            await using var db = await GetSqlConnection();
-            var priceEntity = await db.QueryFirstOrDefaultAsync<PriceDbModel>(
-                $"SELECT * " +
-                $"FROM {TableName} " +
-                $"WHERE ProductId = @ProductId " +
-                $"AND IsDeleted = 0 " +
-                $"AND IsLast = 1", new {ProductId = productId});
+            if (id == Guid.Empty)
+            {
+                return new BadRequestObjectResult("Отсутствует идентификатор стоимости");
+            }
 
-            return _mapper.Map<PriceModel>(priceEntity);
+            var price = await base.Get(id);
+
+            if (price == null)
+            {
+                return new NotFoundObjectResult("Стоимость не найдена в БД");
+            }
+
+            return new OkObjectResult(_mapper.Map<PriceModel>(price));
         }
 
-        public async Task SetNewPriceForProduct(PriceModel price)
+        public async Task<ActionResult> Create(PriceModel price)
         {
-            // Перед установкой новых цен для продукта, старые удаляем.
-            await DeletePricesForProducts(new[] {price.ProductId});
-            
+            if (price == null)
+            {
+                return new BadRequestObjectResult("Отсутствует стоимость для добавления");
+            }
+
             var priceEntity = _mapper.Map<PriceDbModel>(price);
-            priceEntity.IsLast = true;
-            
+
             await base.Create(priceEntity);
+
+            return new OkResult();
         }
 
-        public async Task UpdatePriceForProduct(PriceModel price)
+        public async Task<ActionResult> CreateMany(IEnumerable<PriceModel> prices)
         {
+            if (!prices.Any())
+            {
+                return new BadRequestObjectResult("Отсутствуют цены для добавления");
+            }
+
+            var priceEntity = _mapper.Map<IEnumerable<PriceDbModel>>(prices);
+
+            await base.CreateMany(priceEntity);
+
+            return new OkResult();
+        }
+
+        public async Task<ActionResult> Update(PriceModel price)
+        {
+            if (price == null)
+            {
+                return new BadRequestObjectResult("Отсутствует стоимость для обновления");
+            }
+
             var priceEntity = _mapper.Map<PriceDbModel>(price);
+
             await base.Update(priceEntity);
+
+            return new OkResult();
         }
 
-        public async Task DeletePricesForProducts(IEnumerable<Guid> productsIds)
+        public async Task<ActionResult> UpdateMany(IEnumerable<PriceModel> prices)
         {
-            await using var db = await GetSqlConnection();
-            await db.ExecuteAsync($"UPDATE {TableName} " +
-                                  $"SET IsDeleted = 1, IsLast = 0 " +
-                                  $"WHERE IsDeleted = 0 " +
-                                  $"AND IsLast = 1 " +
-                                  $"AND ProductId IN @productsIds", new {productsIds});
+            if (!prices.Any())
+            {
+                return new BadRequestObjectResult("Отсутствуют цены для обновления");
+            }
+
+            var priceEntity = _mapper.Map<IEnumerable<PriceDbModel>>(prices);
+
+            await base.UpdateMany(priceEntity);
+
+            return new OkResult();
+        }
+
+        public async Task<ActionResult> Delete(Guid id)
+        {
+            if (id == Guid.Empty)
+            {
+                return new BadRequestObjectResult("Отсутствует идентификатор стоимости для удаления");
+            }
+
+            await base.Delete(id);
+
+            return new OkResult();
+        }
+
+        public async Task<ActionResult> DeleteMany(IEnumerable<Guid> ids)
+        {
+            if (!ids.Any())
+            {
+                return new BadRequestObjectResult("Отсутствует идентификаторы цен для удаления");
+            }
+
+            await base.DeleteMany(ids);
+
+            return new OkResult();
         }
     }
 }
