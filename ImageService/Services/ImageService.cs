@@ -56,12 +56,18 @@ namespace ImageService.Services
                 return new NotFoundObjectResult("Изображение не найдено в БД");
             }
 
-            return new ObjectResult(_mapper.Map<ImageModel>(image));
+            return new OkObjectResult(_mapper.Map<ImageModel>(image));
         }
 
-        public IQueryable<ImageEntity> GetAll()
+        public IQueryable<ImageModel> GetAll()
         {
-            return _imageContext.Image.AsQueryable();
+            return _imageContext.Image.Select(x => new ImageModel
+            {
+                Id = x.Id,
+                Url = x.Url,
+                IsDeleted = x.IsDeleted,
+                ProductId = x.ProductId
+            });
         }
 
         public async Task<ActionResult> Create(ImageModel image)

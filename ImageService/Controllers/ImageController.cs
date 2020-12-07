@@ -27,7 +27,7 @@ namespace ImageService.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public IQueryable<ImageEntity> GetAll()
+        public IQueryable<ImageModel> GetAll()
         {
             return _imageService.GetAll();
         }
