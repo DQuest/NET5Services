@@ -1,34 +1,76 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using ProductService.Models.Images;
 using Refit;
 
 namespace ProductService.Clients
 {
-    public interface IImageClient
+    interface IImageClient
     {
         /// <summary>
-        /// Получение изображений для продукта.
+        /// Получение изображений.
         /// </summary>
-        /// <param name="productId">Идентификатор продукта</param>
         /// <returns></returns>
-        [Get("/api/images/GetAllImagesForProduct/{productId}")]
-        Task<IEnumerable<ImageModel>> GetAllImagesForProduct(Guid productId);
+        [Get("/image/GetAll")]
+        IQueryable<ImageModel> GetAll();
+        
+        /// <summary>
+        /// Получение определённого изображения.
+        /// </summary>
+        /// <param name="id">Id изображения</param>
+        /// <returns></returns>
+        [Get("/image/Get/{id}")]
+        Task<ActionResult<ImageModel>> Get(Guid id);
 
         /// <summary>
-        /// Добавление изображений для продукта.
+        /// Добавить изображение.
         /// </summary>
-        /// <param name="uploadImagesModel">Модель загрузки изображений для продукта</param>
+        /// <param name="image"></param>
         /// <returns></returns>
-        [Post("/api/images")]
-        Task UploadImagesForProduct(UploadImagesModel uploadImagesModel);
+        [Post("/image/Create")]
+        Task<ActionResult> Create(ImageModel image);
 
         /// <summary>
-        /// Удаление изображений для продуктов.
+        /// Добавить изображения.
         /// </summary>
+        /// <param name="images"></param>
         /// <returns></returns>
-        [Delete("/api/images")]
-        Task DeleteImages(IEnumerable<Guid> productsIds);
+        [Post("/image/CreateMany")]
+        Task<ActionResult> CreateMany(IEnumerable<ImageModel> images);
+
+        /// <summary>
+        /// Обновить информацию об изображении.
+        /// </summary>
+        /// <param name="image"></param>
+        /// <returns></returns>
+        [Put("/image/Update")]
+        Task<ActionResult> Update(ImageModel image);
+        
+        /// <summary>
+        /// Обновить информацию об изображениях.
+        /// </summary>
+        /// <param name="images"></param>
+        /// <returns></returns>
+        [Put("/image/UpdateMany")]
+        Task<ActionResult> UpdateMany(IEnumerable<ImageModel> images);
+
+        /// <summary>
+        /// Удалить изображение.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [Delete("/image/Delete")]
+        Task<ActionResult> Delete(Guid id);
+
+        /// <summary>
+        /// Удалить изображения.
+        /// </summary>
+        /// <param name="ids"></param>
+        /// <returns></returns>
+        [Delete("/image/DeleteMany")]
+        Task<ActionResult> DeleteMany(IEnumerable<Guid> ids);
     }
 }
