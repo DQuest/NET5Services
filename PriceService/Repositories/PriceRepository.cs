@@ -123,12 +123,6 @@ namespace PriceService.Repositories
             return new NoContentResult();
         }
 
-        private string GetUncheckIsLastPropForDeletedQuery()
-        {
-            return $"UPDATE {TableName} " +
-                   $"SET IsLast = 0 ";
-        }
-
         public async Task<ActionResult> DeleteMany(IEnumerable<Guid> ids)
         {
             if (!ids.Any())
@@ -139,6 +133,12 @@ namespace PriceService.Repositories
             await base.DeleteMany(ids, GetUncheckIsLastPropForDeletedQuery());
 
             return new NoContentResult();
+        }
+        
+        private string GetUncheckIsLastPropForDeletedQuery()
+        {
+            return $"UPDATE {TableName} " +
+                   $"SET IsLast = 0 ";
         }
     }
 }
