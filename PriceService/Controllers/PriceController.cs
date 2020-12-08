@@ -19,7 +19,7 @@ namespace PriceService.Controllers
 
         public PriceController(IPriceRepository priceRepository)
         {
-            _priceRepository = priceRepository ?? throw new ArgumentException(nameof(priceRepository));
+            _priceRepository = priceRepository;
         }
 
         /// <summary>

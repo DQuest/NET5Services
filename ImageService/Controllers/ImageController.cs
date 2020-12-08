@@ -20,7 +20,7 @@ namespace ImageService.Controllers
 
         public ImageController(IImageService imageService)
         {
-            _imageService = imageService ?? throw new ArgumentException(nameof(imageService));
+            _imageService = imageService;
         }
 
         /// <summary>

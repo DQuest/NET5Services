@@ -23,10 +23,10 @@ namespace PriceService.Repositories
         public PriceRepository(IOptions<PriceDbOptions> dbOptions, IMapper mapper)
             : base(dbOptions, TableName)
         {
-            _mapper = mapper ?? throw new ArgumentException(nameof(mapper));
+            _mapper = mapper;
         }
 
-        public async Task<ActionResult<IEnumerable<PriceModel>>> GetAll()
+        public new async Task<ActionResult<IEnumerable<PriceModel>>> GetAll()
         {
             var prices = await base.GetAll();
 
@@ -38,11 +38,11 @@ namespace PriceService.Repositories
             return new OkObjectResult(_mapper.Map<IEnumerable<PriceModel>>(prices));
         }
 
-        public async Task<ActionResult<PriceModel>> Get(Guid id)
+        public new async Task<ActionResult<PriceModel>> Get(Guid id)
         {
             if (id == Guid.Empty)
             {
-                return new BadRequestObjectResult("Отсутствует идентификатор стоимости");
+                return new NotFoundObjectResult("Отсутствует идентификатор стоимости");
             }
 
             var price = await base.Get(id);
@@ -52,87 +52,93 @@ namespace PriceService.Repositories
                 return new NotFoundObjectResult("Стоимость не найдена в БД");
             }
 
-            return new OkObjectResult(_mapper.Map<PriceModel>(price));
+            return _mapper.Map<PriceModel>(price);
         }
 
         public async Task<ActionResult> Create(PriceModel price)
         {
             if (price == null)
             {
-                return new BadRequestObjectResult("Отсутствует стоимость для добавления");
+                return new NotFoundObjectResult("Отсутствует стоимость для добавления");
             }
 
             var priceEntity = _mapper.Map<PriceDbModel>(price);
 
             await base.Create(priceEntity);
 
-            return new OkResult();
+            return new NoContentResult();
         }
 
         public async Task<ActionResult> CreateMany(IEnumerable<PriceModel> prices)
         {
             if (!prices.Any())
             {
-                return new BadRequestObjectResult("Отсутствуют цены для добавления");
+                return new NotFoundObjectResult("Отсутствуют цены для добавления");
             }
 
             var priceEntity = _mapper.Map<IEnumerable<PriceDbModel>>(prices);
 
             await base.CreateMany(priceEntity);
 
-            return new OkResult();
+            return new NoContentResult();
         }
 
         public async Task<ActionResult> Update(PriceModel price)
         {
             if (price == null)
             {
-                return new BadRequestObjectResult("Отсутствует стоимость для обновления");
+                return new NotFoundObjectResult("Отсутствует стоимость для обновления");
             }
 
             var priceEntity = _mapper.Map<PriceDbModel>(price);
 
             await base.Update(priceEntity);
 
-            return new OkResult();
+            return new NoContentResult();
         }
 
         public async Task<ActionResult> UpdateMany(IEnumerable<PriceModel> prices)
         {
             if (!prices.Any())
             {
-                return new BadRequestObjectResult("Отсутствуют цены для обновления");
+                return new NotFoundObjectResult("Отсутствуют цены для обновления");
             }
 
             var priceEntity = _mapper.Map<IEnumerable<PriceDbModel>>(prices);
 
             await base.UpdateMany(priceEntity);
 
-            return new OkResult();
+            return new NoContentResult();
         }
 
         public async Task<ActionResult> Delete(Guid id)
         {
             if (id == Guid.Empty)
             {
-                return new BadRequestObjectResult("Отсутствует идентификатор стоимости для удаления");
+                return new NotFoundObjectResult("Отсутствует идентификатор стоимости для удаления");
             }
+            
+            await base.Delete(id, GetUncheckIsLastPropForDeletedQuery());
 
-            await base.Delete(id);
+            return new NoContentResult();
+        }
 
-            return new OkResult();
+        private string GetUncheckIsLastPropForDeletedQuery()
+        {
+            return $"UPDATE {TableName} " +
+                   $"SET IsLast = 0 ";
         }
 
         public async Task<ActionResult> DeleteMany(IEnumerable<Guid> ids)
         {
             if (!ids.Any())
             {
-                return new BadRequestObjectResult("Отсутствует идентификаторы цен для удаления");
+                return new NotFoundObjectResult("Отсутствует идентификаторы цен для удаления");
             }
 
-            await base.DeleteMany(ids);
+            await base.DeleteMany(ids, GetUncheckIsLastPropForDeletedQuery());
 
-            return new OkResult();
+            return new NoContentResult();
         }
     }
 }
