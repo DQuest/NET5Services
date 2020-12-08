@@ -12,7 +12,8 @@ namespace PriceService.Controllers
     [Authorize]
     [ApiController]
     [Route("[controller]")]
-    public class PriceController : Controller
+    // We don't use Views in our API, then change Controller to ControllerBase
+    public class PriceController : ControllerBase
     {
         private readonly IPriceRepository _priceRepository;
 

@@ -13,7 +13,8 @@ namespace ImageService.Controllers
     [Authorize]
     [ApiController]
     [Route("[controller]")]
-    public class ImageController : Controller
+    // We don't use Views in our API, then change Controller to ControllerBase
+    public class ImageController : ControllerBase
     {
         private readonly IImageService _imageService;
 
