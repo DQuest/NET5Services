@@ -20,20 +20,17 @@ namespace ProductService.Services
         private readonly IPriceClient _priceClient;
         private readonly ProductContext _productContext;
         private readonly IMapper _mapper;
-        private readonly IHttpContextAccessor _httpContextAccessor;
 
         public ProductService(
             IImageClient imageClient, 
             IPriceClient priceClient, 
             ProductContext productContext, 
-            IMapper mapper,
-            IHttpContextAccessor httpContextAccessor)
+            IMapper mapper)
         {
-            _imageClient = imageClient ?? throw new ArgumentNullException(nameof(imageClient));
-            _priceClient = priceClient ?? throw new ArgumentNullException(nameof(priceClient));
-            _productContext = productContext ?? throw new ArgumentNullException(nameof(productContext));
-            _mapper = mapper ?? throw new ArgumentException(nameof(mapper));
-            _httpContextAccessor = httpContextAccessor ?? throw new ArgumentException(nameof(httpContextAccessor));
+            _imageClient = imageClient;
+            _priceClient = priceClient;
+            _productContext = productContext;
+            _mapper = mapper;
         }
 
         public async Task<IEnumerable<ProductModel>> GetAllProducts()
@@ -53,8 +50,8 @@ namespace ProductService.Services
             {
                 try
                 {
-                    product.Images = await _imageClient.GetAllImagesForProduct(product.Id);
-                    product.Prices = await _priceClient.GetActualPriceForProduct(product.Id);
+                    product.Images = _imageClient.GetAll().Where(x => x.ProductId == product.Id);
+                    product.Prices = _priceClient.GetAll();
                 }
                 catch (Exception ex)
                 {

@@ -26,16 +26,10 @@ namespace PriceService.Repositories
             _mapper = mapper;
         }
 
-        public new async Task<ActionResult<IEnumerable<PriceModel>>> GetAll()
+        public new async Task<IEnumerable<PriceModel>> GetAll()
         {
-            var prices = await base.GetAll();
-
-            if (!prices.Any())
-            {
-                return new NotFoundObjectResult("Цены не найдены в БД");
-            }
-
-            return new OkObjectResult(_mapper.Map<IEnumerable<PriceModel>>(prices));
+            // todo: ?
+            return _mapper.Map<IEnumerable<PriceModel>>(await base.GetAll());
         }
 
         public new async Task<ActionResult<PriceModel>> Get(Guid id)

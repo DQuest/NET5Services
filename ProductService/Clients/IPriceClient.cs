@@ -15,7 +15,7 @@ namespace ProductService.Clients
         /// </summary>
         /// <returns></returns>
         [Get("/price/GetAll")]
-        IQueryable<PriceModel> GetAll();
+        Task<IEnumerable<PriceModel>> GetAll();
         
         /// <summary>
         /// Получение определённой цены.

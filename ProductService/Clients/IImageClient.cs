@@ -8,7 +8,7 @@ using Refit;
 
 namespace ProductService.Clients
 {
-    interface IImageClient
+    public interface IImageClient
     {
         /// <summary>
         /// Получение изображений.
