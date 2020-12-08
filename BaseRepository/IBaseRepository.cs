@@ -18,8 +18,8 @@ namespace BaseRepository
 
         Task UpdateMany(IEnumerable<T> entities);
 
-        Task Delete(Guid id);
+        Task Delete(Guid id, string additionalQueryForSameIds = null);
 
-        Task DeleteMany(IEnumerable<Guid> id);
+        Task DeleteMany(IEnumerable<Guid> id, string additionalQueryForSameIds = null);
     }
 }

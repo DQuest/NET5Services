@@ -79,12 +79,17 @@ namespace BaseRepository
             }
         }
 
-        public virtual async Task Delete(Guid id)
+        public virtual async Task Delete(Guid id, string additionalQueryForSameIds = null)
         {
             await using var db = await GetSqlConnection();
             await db.ExecuteAsync($"UPDATE {TableName} " +
                                   $"SET IsDeleted = 1 " +
                                   $"WHERE Id = @Id", new {Id = id});
+            
+            if (additionalQueryForSameIds != null)
+            {
+                await db.ExecuteAsync($"{additionalQueryForSameIds} WHERE Id = @Id", new {Id = id});
+            }
         }
 
         public virtual async Task CreateMany(IEnumerable<T> entities)
@@ -119,7 +124,7 @@ namespace BaseRepository
             }
         }
 
-        public virtual async Task DeleteMany(IEnumerable<Guid> ids)
+        public virtual async Task DeleteMany(IEnumerable<Guid> ids, string additionalQueryForSameIds = null)
         {
             await using var db = await GetSqlConnection();
 
@@ -128,6 +133,11 @@ namespace BaseRepository
                 await db.ExecuteAsync($"UPDATE {TableName} " +
                                       $"SET IsDeleted = 1 " +
                                       $"WHERE Id = @Id", new {Id = id});
+
+                if (additionalQueryForSameIds != null)
+                {
+                    await db.ExecuteAsync($"{additionalQueryForSameIds} WHERE Id = @Id", new {Id = id});
+                }
             }
         }
 
