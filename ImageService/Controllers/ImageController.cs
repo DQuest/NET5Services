@@ -10,7 +10,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ImageService.Controllers
 {
+#if !DEBUG
     [Authorize]
+#endif
     [ApiController]
     [Route("[controller]")]
     // We don't use Views in our API, then change Controller to ControllerBase

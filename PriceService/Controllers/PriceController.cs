@@ -9,7 +9,9 @@ using PriceService.Models;
 
 namespace PriceService.Controllers
 {
+#if !DEBUG
     [Authorize]
+#endif
     [ApiController]
     [Route("[controller]")]
     // We don't use Views in our API, then change Controller to ControllerBase

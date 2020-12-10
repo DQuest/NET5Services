@@ -8,8 +8,10 @@ using ProductService.Models;
 
 namespace ProductService.Controllers
 {
-    [ApiController]
+#if !DEBUG
     [Authorize]
+#endif
+    [ApiController]
     [Route("api/products")]
     public class ProductController : Controller
     {
