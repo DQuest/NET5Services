@@ -29,7 +29,7 @@ namespace PriceService.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public async Task<IEnumerable<PriceModel>> GetAll()
+        public async Task<ActionResult<IEnumerable<PriceModel>>> GetAll()
         {
             return await _priceRepository.GetAll();
         }

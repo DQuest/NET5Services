@@ -15,7 +15,7 @@ namespace ProductService.Clients
         /// </summary>
         /// <returns></returns>
         [Get("/image/GetAll")]
-        IQueryable<ImageModel> GetAll();
+        Task<ActionResult<IEnumerable<ImageModel>>> GetAll();
         
         /// <summary>
         /// Получение определённого изображения.

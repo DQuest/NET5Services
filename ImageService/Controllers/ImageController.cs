@@ -30,9 +30,9 @@ namespace ImageService.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public IQueryable<ImageModel> GetAll()
+        public async Task<ActionResult<IEnumerable<ImageModel>>> GetAll()
         {
-            return _imageService.GetAll();
+            return await _imageService.GetAll();
         }
         
         /// <summary>

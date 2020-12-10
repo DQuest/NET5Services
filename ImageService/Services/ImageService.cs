@@ -54,15 +54,18 @@ namespace ImageService.Services
             return _mapper.Map<ImageModel>(image);
         }
 
-        public IQueryable<ImageModel> GetAll()
+        public async Task<ActionResult<IEnumerable<ImageModel>>> GetAll()
         {
-            return _imageContext.Image.Select(x => new ImageModel
+            // todo: оптимизировать (paging?, asAsyncEnum?) 
+            var images = await _imageContext.Image.ToListAsync();
+
+            if (!images.Any())
             {
-                Id = x.Id,
-                Url = x.Url,
-                IsDeleted = x.IsDeleted,
-                ProductId = x.ProductId
-            });
+                return new NotFoundObjectResult("Изображения не найдены в БД");
+            }
+
+            // gives emphasis of the content that is returned
+            return new ObjectResult(_mapper.Map<IEnumerable<ImageModel>>(images));
         }
 
         public async Task<ActionResult> Create(ImageModel image)

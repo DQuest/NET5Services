@@ -10,7 +10,7 @@ namespace ImageService.Interfaces
 {
     public interface IImageService
     {
-        IQueryable<ImageModel> GetAll();
+        Task<ActionResult<IEnumerable<ImageModel>>> GetAll();
         
         Task<ActionResult<ImageModel>> Get(Guid id);
         

@@ -9,7 +9,7 @@ namespace PriceService.Interfaces
 {
     public interface IPriceRepository
     {
-        Task<IEnumerable<PriceModel>> GetAll();
+        Task<ActionResult<IEnumerable<PriceModel>>> GetAll();
         
         Task<ActionResult<PriceModel>> Get(Guid id);
         

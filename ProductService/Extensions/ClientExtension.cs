@@ -8,7 +8,7 @@ using Refit;
 namespace ProductService.Extensions
 {
     /// <summary>
-    /// ToDo: вынести в AuthBase
+    /// ToDo: вынести в AuthBase ?
     /// </summary>
     public static class ClientExtension
     {
