@@ -3,12 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using PriceService.Interfaces;
 using BaseRepository;
-using Dapper;
-using Microsoft.AspNetCore.Hosting.StaticWebAssets;
 using Microsoft.AspNetCore.Mvc;
 using PriceService.Models;
 
@@ -65,6 +62,8 @@ namespace PriceService.Repositories
 
             var priceEntity = _mapper.Map<PriceDbModel>(price);
 
+            FillBaseFieldsForCreateOperation(priceEntity);
+
             await base.Create(priceEntity);
 
             return new NoContentResult();
@@ -78,6 +77,11 @@ namespace PriceService.Repositories
             }
 
             var priceEntity = _mapper.Map<IEnumerable<PriceDbModel>>(prices);
+
+            foreach (var price in priceEntity)
+            {
+                FillBaseFieldsForCreateOperation(price);
+            }
 
             await base.CreateMany(priceEntity);
 
@@ -118,7 +122,7 @@ namespace PriceService.Repositories
             {
                 return new NotFoundObjectResult("Отсутствует идентификатор стоимости для удаления");
             }
-            
+
             await base.Delete(id, GetUncheckIsLastPropForDeletedQuery());
 
             return new NoContentResult();
@@ -135,11 +139,18 @@ namespace PriceService.Repositories
 
             return new NoContentResult();
         }
-        
+
         private string GetUncheckIsLastPropForDeletedQuery()
         {
             return $"UPDATE {TableName} " +
                    $"SET IsLast = 0 ";
+        }
+
+        private void FillBaseFieldsForCreateOperation(PriceDbModel priceEntity)
+        {
+            priceEntity.Id = new Guid();
+            priceEntity.IsLast = true;
+            priceEntity.IsDeleted = false;
         }
     }
 }

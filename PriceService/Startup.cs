@@ -33,6 +33,7 @@ namespace PriceService
             });
             
             services.AddScoped<IPriceRepository, PriceRepository>();
+            services.AddScoped<IProductPriceRepository, ProductPriceRepository>();
 
             AddAutoMapper(services);
             services.AddPriceDbOptions(Configuration);

@@ -39,6 +39,7 @@ namespace ImageService
             });
 
             services.AddTransient<IImageService, Services.ImageService>();
+            services.AddTransient<IProductImageService, Services.ProductImageService>();
 
             SetupRefit(services);
             AddAutoMapper(services);

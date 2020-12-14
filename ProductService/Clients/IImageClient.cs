@@ -11,26 +11,26 @@ namespace ProductService.Clients
     public interface IImageClient
     {
         /// <summary>
-        /// Получение изображений.
+        /// Получение изображений для продукта.
         /// </summary>
         /// <returns></returns>
-        [Get("/image/GetAll")]
-        Task<ActionResult<IEnumerable<ImageModel>>> GetAll();
+        [Get("/ProductImage/{productId}")]
+        Task<IEnumerable<ImageModel>> GetAllImagesForProduct(Guid productId);
         
         /// <summary>
         /// Получение определённого изображения.
         /// </summary>
         /// <param name="id">Id изображения</param>
         /// <returns></returns>
-        [Get("/image/Get/{id}")]
-        Task<ActionResult<ImageModel>> Get(Guid id);
+        [Get("/Image/Get/{id}")]
+        Task<ImageModel> Get(Guid id);
 
         /// <summary>
         /// Добавить изображение.
         /// </summary>
         /// <param name="image"></param>
         /// <returns></returns>
-        [Post("/image/Create")]
+        [Post("/Image/Create")]
         Task<ActionResult> Create(ImageModel image);
 
         /// <summary>
@@ -38,7 +38,7 @@ namespace ProductService.Clients
         /// </summary>
         /// <param name="images"></param>
         /// <returns></returns>
-        [Post("/image/CreateMany")]
+        [Post("/Image/CreateMany")]
         Task<ActionResult> CreateMany(IEnumerable<ImageModel> images);
 
         /// <summary>
@@ -46,7 +46,7 @@ namespace ProductService.Clients
         /// </summary>
         /// <param name="image"></param>
         /// <returns></returns>
-        [Put("/image/Update")]
+        [Put("/Image/Update")]
         Task<ActionResult> Update(ImageModel image);
         
         /// <summary>
@@ -54,7 +54,7 @@ namespace ProductService.Clients
         /// </summary>
         /// <param name="images"></param>
         /// <returns></returns>
-        [Put("/image/UpdateMany")]
+        [Put("/Image/UpdateMany")]
         Task<ActionResult> UpdateMany(IEnumerable<ImageModel> images);
 
         /// <summary>
@@ -62,7 +62,7 @@ namespace ProductService.Clients
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [Delete("/image/Delete")]
+        [Delete("/Image/Delete")]
         Task<ActionResult> Delete(Guid id);
 
         /// <summary>
@@ -70,7 +70,7 @@ namespace ProductService.Clients
         /// </summary>
         /// <param name="ids"></param>
         /// <returns></returns>
-        [Delete("/image/DeleteMany")]
+        [Delete("/Image/DeleteMany")]
         Task<ActionResult> DeleteMany(IEnumerable<Guid> ids);
     }
 }

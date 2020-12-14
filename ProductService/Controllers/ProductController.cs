@@ -12,68 +12,101 @@ namespace ProductService.Controllers
     [Authorize]
 #endif
     [ApiController]
-    [Route("api/products")]
+    [Route("[controller]")]
     public class ProductController : Controller
     {
         private readonly IProductService _productService;
 
         public ProductController(IProductService productService)
         {
-            _productService = productService ?? throw new ArgumentException(nameof(productService));;
+            _productService = productService;
         }
 
         /// <summary>
-        /// Получить все продукты.
+        /// Получение продуктов.
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public async Task<IEnumerable<ProductModel>> GetAllProducts()
+        public Task<ActionResult<IEnumerable<ProductModel>>> GetAll()
         {
-            return await _productService.GetAllProducts();
+            return _productService.GetAll();
         }
 
         /// <summary>
-        /// Получить продукт.
+        /// Получение определённого продукта.
         /// </summary>
-        /// <param name="productId">Id продукта</param>
+        /// <param name="id">Id продукты</param>
         /// <returns></returns>
-        [HttpGet("{productId}")]
-        public async Task<ProductModel> GetProduct(Guid productId)
+        [HttpGet("{id}")]
+        public async Task<ActionResult<ProductModel>> Get(Guid id)
         {
-            return await _productService.GetProduct(productId);
+            return await _productService.Get(id);
         }
 
         /// <summary>
         /// Добавить продукт.
         /// </summary>
-        /// <param name="product">Модель продукта</param>
+        /// <param name="product"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task CreateProduct(ProductModel product)
+        public async Task<ActionResult> Create(ProductModel product)
         {
-            await _productService.CreateProduct(product);
+            return await _productService.Create(product);
         }
 
         /// <summary>
-        /// Изменить продукт.
+        /// Добавить продукты.
         /// </summary>
-        /// <param name="product">Модель продукта</param>
+        /// <param name="products"></param>
+        /// <returns></returns>
+        [HttpPost("CreateMany")]
+        public async Task<ActionResult> CreateMany(IEnumerable<ProductModel> products)
+        {
+            return await _productService.CreateMany(products);
+        }
+
+        /// <summary>
+        /// Обновить информацию об продукте.
+        /// </summary>
+        /// <param name="product"></param>
         /// <returns></returns>
         [HttpPut]
-        public async Task UpdateProduct(ProductModel product)
+        public async Task<ActionResult> Update(ProductModel product)
         {
-            await _productService.UpdateProduct(product);
+            return await _productService.Update(product);
+        }
+
+        /// <summary>
+        /// Обновить информацию об продуктах.
+        /// </summary>
+        /// <param name="products"></param>
+        /// <returns></returns>
+        [HttpPut("UpdateMany")]
+        public async Task<ActionResult> UpdateMany(IEnumerable<ProductModel> products)
+        {
+            return await _productService.UpdateMany(products);
+        }
+
+        /// <summary>
+        /// Удалить продукт.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpDelete]
+        public async Task<ActionResult> Delete(Guid id)
+        {
+            return await _productService.Delete(id);
         }
 
         /// <summary>
         /// Удалить продукты.
         /// </summary>
-        /// <param name="productsIds">Идентификаторы продуктов</param>
+        /// <param name="ids"></param>
         /// <returns></returns>
-        [HttpDelete]
-        public async Task DeleteProducts(IEnumerable<Guid> productsIds)
+        [HttpDelete("DeleteMany")]
+        public async Task<ActionResult> DeleteMany(IEnumerable<Guid> ids)
         {
-            await _productService.DeleteProducts(productsIds);
+            return await _productService.DeleteMany(ids);
         }
     }
 }

@@ -1,20 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using ProductService.Models;
 
 namespace ProductService.Interfaces
 {
     public interface IProductService
     {
-        Task<IEnumerable<ProductModel>> GetAllProducts();
+        Task<ActionResult<IEnumerable<ProductModel>>> GetAll();
+        
+        Task<ActionResult<ProductModel>> Get(Guid id);
+        
+        Task<ActionResult> Create(ProductModel product);
 
-        Task<ProductModel> GetProduct(Guid productId);
+        Task<ActionResult> CreateMany(IEnumerable<ProductModel> products);
 
-        Task CreateProduct(ProductModel product);
+        Task<ActionResult> Update(ProductModel product);
+        
+        Task<ActionResult> UpdateMany(IEnumerable<ProductModel> products);
 
-        Task UpdateProduct(ProductModel product);
+        Task<ActionResult> Delete(Guid id);
 
-        Task DeleteProducts(IEnumerable<Guid> productsIds);
+        Task<ActionResult> DeleteMany(IEnumerable<Guid> ids);
     }
 }
