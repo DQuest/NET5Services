@@ -22,7 +22,7 @@ namespace ProductService.Clients
         /// </summary>
         /// <param name="id">Id изображения</param>
         /// <returns></returns>
-        [Get("/Image/Get/{id}")]
+        [Get("/Image/{id}")]
         Task<ImageModel> Get(Guid id);
 
         /// <summary>
@@ -30,7 +30,7 @@ namespace ProductService.Clients
         /// </summary>
         /// <param name="image"></param>
         /// <returns></returns>
-        [Post("/Image/Create")]
+        [Post("/Image")]
         Task<ActionResult> Create(ImageModel image);
 
         /// <summary>
@@ -46,7 +46,7 @@ namespace ProductService.Clients
         /// </summary>
         /// <param name="image"></param>
         /// <returns></returns>
-        [Put("/Image/Update")]
+        [Put("/Image")]
         Task<ActionResult> Update(ImageModel image);
         
         /// <summary>
@@ -62,7 +62,7 @@ namespace ProductService.Clients
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [Delete("/Image/Delete")]
+        [Delete("/Image")]
         Task<ActionResult> Delete(Guid id);
 
         /// <summary>

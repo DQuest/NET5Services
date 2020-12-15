@@ -22,7 +22,7 @@ namespace ProductService.Clients
         /// </summary>
         /// <param name="id">Id цены</param>
         /// <returns></returns>
-        [Get("/Price/Get/{id}")]
+        [Get("/Price/{id}")]
         Task<PriceModel> Get(Guid id);
 
         /// <summary>
@@ -30,7 +30,7 @@ namespace ProductService.Clients
         /// </summary>
         /// <param name="price"></param>
         /// <returns></returns>
-        [Post("/Price/Create")]
+        [Post("/Price")]
         Task<ActionResult> Create(PriceModel price);
 
         /// <summary>
@@ -46,7 +46,7 @@ namespace ProductService.Clients
         /// </summary>
         /// <param name="price"></param>
         /// <returns></returns>
-        [Put("/Price/Update")]
+        [Put("/Price")]
         Task<ActionResult> Update(PriceModel price);
         
         /// <summary>
@@ -62,7 +62,7 @@ namespace ProductService.Clients
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [Delete("/Price/Delete")]
+        [Delete("/Price")]
         Task<ActionResult> Delete(Guid id);
 
         /// <summary>
