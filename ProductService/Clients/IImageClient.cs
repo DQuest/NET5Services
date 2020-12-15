@@ -16,6 +16,14 @@ namespace ProductService.Clients
         /// <returns></returns>
         [Get("/ProductImage/{productId}")]
         Task<IEnumerable<ImageModel>> GetAllImagesForProduct(Guid productId);
+
+        /// <summary>
+        /// Удаление изображений для продукта.
+        /// </summary>
+        /// <param name="productId"></param>
+        /// <returns></returns>
+        [Delete("/ProductImage/{productId}")]
+        Task<ApiResponse<ImageModel>> DeleteImagesForProduct(Guid productId);
         
         /// <summary>
         /// Получение определённого изображения.
@@ -31,7 +39,7 @@ namespace ProductService.Clients
         /// <param name="image"></param>
         /// <returns></returns>
         [Post("/Image")]
-        Task<ActionResult> Create(ImageModel image);
+        Task<ApiResponse<ImageModel>> Create(ImageModel image);
 
         /// <summary>
         /// Добавить изображения.
@@ -39,7 +47,7 @@ namespace ProductService.Clients
         /// <param name="images"></param>
         /// <returns></returns>
         [Post("/Image/CreateMany")]
-        Task<ActionResult> CreateMany(IEnumerable<ImageModel> images);
+        Task<ApiResponse<ImageModel>> CreateMany(IEnumerable<ImageModel> images);
 
         /// <summary>
         /// Обновить информацию об изображении.
@@ -47,7 +55,7 @@ namespace ProductService.Clients
         /// <param name="image"></param>
         /// <returns></returns>
         [Put("/Image")]
-        Task<ActionResult> Update(ImageModel image);
+        Task<ApiResponse<ImageModel>> Update(ImageModel image);
         
         /// <summary>
         /// Обновить информацию об изображениях.
@@ -55,7 +63,7 @@ namespace ProductService.Clients
         /// <param name="images"></param>
         /// <returns></returns>
         [Put("/Image/UpdateMany")]
-        Task<ActionResult> UpdateMany(IEnumerable<ImageModel> images);
+        Task<ApiResponse<ImageModel>> UpdateMany(IEnumerable<ImageModel> images);
 
         /// <summary>
         /// Удалить изображение.
@@ -63,7 +71,7 @@ namespace ProductService.Clients
         /// <param name="id"></param>
         /// <returns></returns>
         [Delete("/Image")]
-        Task<ActionResult> Delete(Guid id);
+        Task<ApiResponse<ImageModel>> Delete(Guid id);
 
         /// <summary>
         /// Удалить изображения.
@@ -71,6 +79,6 @@ namespace ProductService.Clients
         /// <param name="ids"></param>
         /// <returns></returns>
         [Delete("/Image/DeleteMany")]
-        Task<ActionResult> DeleteMany(IEnumerable<Guid> ids);
+        Task<ApiResponse<ImageModel>> DeleteMany(IEnumerable<Guid> ids);
     }
 }

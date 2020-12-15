@@ -32,167 +32,6 @@ namespace ProductService.Services
             _mapper = mapper;
         }
 
-        // public async async Task<IEnumerable<ProductModel>> GetAll()
-        // {
-        //     var products = await _productContext.Product
-        //         .Where(x => x.IsDeleted == false)
-        //         .ToListAsync();
-        //
-        //     if (!products.Any())
-        //     {
-        //         throw new ArgumentException("Продукты не найдены в БД");
-        //     }
-        //
-        //     var productsModel = _mapper.Map<IEnumerable<ProductModel>>(products);
-        //
-        //     foreach (var product in productsModel)
-        //     {
-        //         try
-        //         {
-        //             product.Images = _imageClient.GetAll().Where(x => x.ProductId == product.Id);
-        //             product.Prices = _priceClient.GetAll();
-        //         }
-        //         catch (Exception ex)
-        //         {
-        //             // todo нужна какая-то обёртка, чтобы не сыпать везде try{}catch{} блоки
-        //         }
-        //     }
-        //
-        //     return productsModel;
-        // }
-        //
-        // public async async Task<ProductModel> Get(Guid productId)
-        // {
-        //     var productEntity = await _productContext.Product
-        //         .Where(x => x.IsDeleted == false)
-        //         .FirstOrDefaultAsync(x => x.Id == productId);
-        //
-        //     if (productEntity == null)
-        //     {
-        //         throw new ArgumentException("Продукт не найден в БД");
-        //     }
-        //
-        //     var product = _mapper.Map<ProductModel>(productEntity);
-        //     try
-        //     {
-        //         product.Images = await _imageClient.GetAllImagesForProduct(productId);
-        //         product.Prices = await _priceClient.GetActualPriceForProduct(productId);
-        //     }
-        //     catch (Exception ex)
-        //     {
-        //         // todo нужна какая-то обёртка, чтобы не сыпать везде try{}catch{} блоки
-        //     }
-        //
-        //     return product;
-        // }
-        //
-        // public async async Task CreateProduct(ProductModel product)
-        // {
-        //     var productEntity = _mapper.Map<ProductEntity>(product);
-        //
-        //     Guid.TryParse(_httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier),
-        //         out var userId);
-        //
-        //     productEntity.Id = product.Id = new Guid();
-        //     productEntity.CreatedBy = userId;
-        //     productEntity.LastSavedBy = userId;
-        //     productEntity.CreatedDate = DateTime.Now;
-        //     productEntity.LastSavedDate = DateTime.Now;
-        //
-        //     await UploadImagesIfExist(product);
-        //     await SetPriceIfExist(product);
-        //
-        //     await _productContext.Product.AddRangeAsync(productEntity);
-        //     await _productContext.SaveChangesAsync();
-        // }
-        //
-        // public async async Task UpdateProduct(ProductModel product)
-        // {
-        //     var productEntity = _mapper.Map<ProductEntity>(product);
-        //
-        //     productEntity.LastSavedDate = DateTime.Now;
-        //
-        //     if (Guid.TryParse(_httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier),
-        //         out var userId))
-        //     {
-        //         productEntity.LastSavedBy = userId;
-        //     }
-        //
-        //     await UploadImagesIfExist(product);
-        //     await SetPriceIfExist(product);
-        //
-        //     _productContext.Product.Update(productEntity);
-        //     await _productContext.SaveChangesAsync();
-        // }
-        //
-        // public async async Task DeleteProducts(IEnumerable<Guid> productsIds)
-        // {
-        //     var products = await _productContext.Product
-        //         .Where(x => x.IsDeleted == false)
-        //         .Where(x => productsIds.Contains(x.Id))
-        //         .ToListAsync();
-        //
-        //     if (!products.Any())
-        //     {
-        //         throw new ArgumentException("Не найдены продукты для удаления");
-        //     }
-        //
-        //     Guid.TryParse(_httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier),
-        //         out var userId);
-        //
-        //     var dateTimeNow = DateTime.Now;
-        //     foreach (var product in products)
-        //     {
-        //         product.LastSavedBy = userId;
-        //         product.LastSavedDate = dateTimeNow;
-        //         product.IsDeleted = true;
-        //     }
-        //
-        //     // todo в теории, если навешивать ограничение внешнего ключа в БД на дочерние для продукта сущности (изображения и цены)
-        //     // todo то придётся сначала убирать их, перед удаление продукта. Пока ограничения нет, удаление цен и изобрежений не производим
-        //
-        //     _productContext.Product.UpdateRange(products);
-        //     await _productContext.SaveChangesAsync();
-        // }
-        //
-        // private async async Task SetPriceIfExist(ProductModel product)
-        // {
-        //     if (product.Prices != null)
-        //     {
-        //         try
-        //         {
-        //             await _priceClient.SetNewPriceForProduct(new PriceModel
-        //             {
-        //                 ProductId = product.Id,
-        //                 DiscountPrice = product.Prices.DiscountPrice,
-        //                 SellPrice = product.Prices.SellPrice
-        //             });
-        //         }
-        //         catch (Exception ex)
-        //         {
-        //             // todo нужна какая-то обёртка, чтобы не сыпать везде try{}catch{} блоки
-        //         }
-        //     }
-        // }
-        //
-        // private async async Task UploadImagesIfExist(ProductModel product)
-        // {
-        //     if (product.Images.Any())
-        //     {
-        //         try
-        //         {
-        //             await _imageClient.UploadImagesForProduct(new UploadImagesModel
-        //             {
-        //                 ProductId = product.Id,
-        //                 ImageUrls = product.Images.Select(x => x.Url)
-        //             });
-        //         }
-        //         catch (Exception ex)
-        //         {
-        //             // todo нужна какая-то обёртка, чтобы не сыпать везде try{}catch{} блоки
-        //         }
-        //     }
-        // }
         public async Task<ActionResult<IEnumerable<ProductModel>>> GetAll()
         {
             var products = await _productContext.Product
@@ -200,7 +39,8 @@ namespace ProductService.Services
                 {
                     Id = x.Id,
                     Name = x.Name,
-                    Description = x.Description
+                    Description = x.Description,
+                    IsDeleted = x.IsDeleted
                 })
                 .ToListAsync();
 
@@ -220,13 +60,19 @@ namespace ProductService.Services
 
         public async Task<ActionResult<ProductModel>> Get(Guid id)
         {
+            if (id == Guid.Empty)
+            {
+                return new NotFoundObjectResult("Не получен идентификатор продукта");
+            }
+
             var product = await _productContext.Product
                 .Where(x => x.Id == id)
                 .Select(x => new ProductModel
                 {
                     Id = x.Id,
                     Name = x.Name,
-                    Description = x.Description
+                    Description = x.Description,
+                    IsDeleted = x.IsDeleted
                 })
                 .FirstOrDefaultAsync();
 
@@ -249,11 +95,18 @@ namespace ProductService.Services
                 return new NotFoundObjectResult("Отсутствует продукт для добавления");
             }
 
-            await CreateImagesAndPrice(product, response);
-
             var productEntity = _mapper.Map<ProductEntity>(product);
 
-            FillBaseFields(productEntity, true);
+            FillBaseFieldsForCreateAndUpdate(productEntity, true);
+
+            foreach (var image in product.Images)
+            {
+                image.ProductId = productEntity.Id;
+            }
+
+            product.Price.ProductId = productEntity.Id;
+
+            await CreateImagesAndPrice(product, response);
 
             await _productContext.Product.AddAsync(productEntity);
 
@@ -277,7 +130,7 @@ namespace ProductService.Services
 
             foreach (var product in productEntity)
             {
-                FillBaseFields(product, true);
+                FillBaseFieldsForCreateAndUpdate(product, true);
             }
 
             await _productContext.Product.AddRangeAsync(productEntity);
@@ -297,7 +150,7 @@ namespace ProductService.Services
 
             var productEntity = _mapper.Map<ProductEntity>(product);
 
-            FillBaseFields(productEntity, false);
+            FillBaseFieldsForCreateAndUpdate(productEntity, false);
 
             _productContext.Product.Update(productEntity);
 
@@ -321,7 +174,7 @@ namespace ProductService.Services
 
             foreach (var product in productEntity)
             {
-                FillBaseFields(product, true);
+                FillBaseFieldsForCreateAndUpdate(product, true);
             }
 
             _productContext.Product.UpdateRange(productEntity);
@@ -338,7 +191,7 @@ namespace ProductService.Services
             }
 
             var product = await _productContext.Product
-                .Where(x => x.IsDeleted == false)
+                // .Where(x => x.IsDeleted == false)
                 .Where(x => x.Id == id)
                 .FirstOrDefaultAsync();
 
@@ -347,13 +200,10 @@ namespace ProductService.Services
                 return new NotFoundObjectResult("Продукт не найден в БД");
             }
 
-            await DeleteImagesAndPrice(product, response);
-
-            FillBaseFields(product, false);
-            product.IsDeleted = true;
-
+            FillBaseFieldsForDelete(product);
             _productContext.Product.Update(product);
 
+            await DeleteImagesAndPrice(product, response);
             return await TryToSaveAndReturnResult(response);
         }
 
@@ -366,7 +216,7 @@ namespace ProductService.Services
             }
 
             var products = await _productContext.Product
-                .Where(x => x.IsDeleted == false)
+                // .Where(x => x.IsDeleted == false)
                 .Where(x => ids.Contains(x.Id))
                 .ToListAsync();
 
@@ -378,15 +228,19 @@ namespace ProductService.Services
             foreach (var product in products)
             {
                 await DeleteImagesAndPrice(product, response);
-                FillBaseFields(product, false);
-                product.IsDeleted = true;
+                FillBaseFieldsForDelete(product);
             }
 
             _productContext.Product.UpdateRange(products);
-
             return await TryToSaveAndReturnResult(response);
         }
-        
+
+        private static void FillBaseFieldsForDelete(ProductEntity product)
+        {
+            product.LastSavedDate = DateTime.Now;
+            product.IsDeleted = true;
+        }
+
         private async Task<ActionResult> TryToSaveAndReturnResult(List<string> response)
         {
             try
@@ -406,25 +260,19 @@ namespace ProductService.Services
         {
             if (product.Price != null)
             {
-                try
+                var createPriceResponse = await _priceClient.Create(product.Price);
+                if (!createPriceResponse.IsSuccessStatusCode)
                 {
-                    await _priceClient.Create(product.Price);
-                }
-                catch (Exception exception)
-                {
-                    response.Add(exception.Message);
+                    response.Add(createPriceResponse.Error.Content);
                 }
             }
 
             if (product.Images.Any())
             {
-                try
+                var createImagesResponse = await _imageClient.CreateMany(product.Images);
+                if (!createImagesResponse.IsSuccessStatusCode)
                 {
-                    await _imageClient.CreateMany(product.Images);
-                }
-                catch (Exception exception)
-                {
-                    response.Add(exception.Message);
+                    response.Add(createImagesResponse.Error.Content);
                 }
             }
         }
@@ -433,55 +281,35 @@ namespace ProductService.Services
         {
             if (product.Images.Any())
             {
-                try
+                var updateImagesResponse = await _imageClient.UpdateMany(product.Images);
+                if (!updateImagesResponse.IsSuccessStatusCode)
                 {
-                    await _imageClient.UpdateMany(product.Images);
-                }
-                catch (Exception exception)
-                {
-                    response.Add(exception.Message);
+                    response.Add(updateImagesResponse.Error.Content);
                 }
             }
 
             if (product.Price != null)
             {
-                try
+                var updatePriceResponse = await _priceClient.Update(product.Price);
+                if (!updatePriceResponse.IsSuccessStatusCode)
                 {
-                    await _priceClient.Update(product.Price);
-                }
-                catch (Exception exception)
-                {
-                    response.Add(exception.Message);
+                    response.Add(updatePriceResponse.Error.Content);
                 }
             }
         }
 
         private async Task DeleteImagesAndPrice(ProductEntity product, List<string> response)
         {
-            var images = await _imageClient.GetAllImagesForProduct(product.Id);
-            if (images.Any())
+            var deleteImageResult = await _imageClient.DeleteImagesForProduct(product.Id);
+            if (!deleteImageResult.IsSuccessStatusCode)
             {
-                try
-                {
-                    await _imageClient.DeleteMany(images.Select(x => x.Id));
-                }
-                catch (Exception exception)
-                {
-                    response.Add(exception.Message);
-                }
+                response.Add(deleteImageResult.Error.Content);
             }
 
-            var price = await _priceClient.GetPriceForProduct(product.Id);
-            if (price == null)
+            var deletePriceResult = await _priceClient.DeletePriceForProduct(product.Id);
+            if (!deletePriceResult.IsSuccessStatusCode)
             {
-                try
-                {
-                    await _imageClient.Delete(price.Id);
-                }
-                catch (Exception exception)
-                {
-                    response.Add(exception.Message);
-                }
+                response.Add(deletePriceResult.Error.Content);
             }
         }
 
@@ -511,11 +339,12 @@ namespace ProductService.Services
             }
         }
 
-        private void FillBaseFields(ProductEntity productEntity, bool isCreateOperation)
+        private void FillBaseFieldsForCreateAndUpdate(ProductEntity productEntity, bool isCreateOperation)
         {
             var now = DateTime.Now;
             if (isCreateOperation)
             {
+                productEntity.Id = Guid.NewGuid();
                 productEntity.IsDeleted = false;
                 productEntity.CreatedDate = now;
             }

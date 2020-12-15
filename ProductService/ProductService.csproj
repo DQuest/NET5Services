@@ -24,4 +24,8 @@
       <ProjectReference Include="..\BaseRepository\BaseRepository.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Remove="Extensions\FillFieldsExtensions.cs" />
+    </ItemGroup>
+
 </Project>

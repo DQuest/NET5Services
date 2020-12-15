@@ -9,5 +9,7 @@ namespace ImageService.Interfaces
     public interface IProductImageService
     {
         Task<ActionResult<IEnumerable<ImageModel>>> GetAllImagesForProduct(Guid productId);
+
+        Task<ActionResult> DeleteImagesForProduct(Guid productId);
     }
 }

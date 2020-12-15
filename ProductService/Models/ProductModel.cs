@@ -27,5 +27,10 @@ namespace ProductService.Models
         /// Цены на товар.
         /// </summary>
         public PriceModel Price { get; set; }
+        
+        /// <summary>
+        /// Признак удалённого продукта.
+        /// </summary>
+        public bool IsDeleted { get; set; }
     }
 }

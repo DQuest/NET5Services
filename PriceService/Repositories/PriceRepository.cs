@@ -148,7 +148,7 @@ namespace PriceService.Repositories
 
         private void FillBaseFieldsForCreateOperation(PriceDbModel priceEntity)
         {
-            priceEntity.Id = new Guid();
+            priceEntity.Id = Guid.NewGuid();
             priceEntity.IsLast = true;
             priceEntity.IsDeleted = false;
         }

@@ -18,12 +18,19 @@ namespace ProductService.Clients
         Task<PriceModel> GetPriceForProduct(Guid productId);
         
         /// <summary>
+        /// Получение цены для продукта.
+        /// </summary>
+        /// <returns></returns>
+        [Delete("/ProductPrice/{productId}")]
+        Task<ApiResponse<PriceModel>> DeletePriceForProduct(Guid productId);
+        
+        /// <summary>
         /// Получение определённой цены.
         /// </summary>
         /// <param name="id">Id цены</param>
         /// <returns></returns>
         [Get("/Price/{id}")]
-        Task<PriceModel> Get(Guid id);
+        Task<ApiResponse<PriceModel>> Get(Guid id);
 
         /// <summary>
         /// Добавить стоимость.
@@ -31,7 +38,7 @@ namespace ProductService.Clients
         /// <param name="price"></param>
         /// <returns></returns>
         [Post("/Price")]
-        Task<ActionResult> Create(PriceModel price);
+        Task<ApiResponse<PriceModel>> Create(PriceModel price);
 
         /// <summary>
         /// Добавить цены.
@@ -39,7 +46,7 @@ namespace ProductService.Clients
         /// <param name="prices"></param>
         /// <returns></returns>
         [Post("/Price/CreateMany")]
-        Task<ActionResult> CreateMany(IEnumerable<PriceModel> prices);
+        Task<ApiResponse<PriceModel>> CreateMany(IEnumerable<PriceModel> prices);
 
         /// <summary>
         /// Обновить информацию об изображении.
@@ -47,7 +54,7 @@ namespace ProductService.Clients
         /// <param name="price"></param>
         /// <returns></returns>
         [Put("/Price")]
-        Task<ActionResult> Update(PriceModel price);
+        Task<ApiResponse<PriceModel>> Update(PriceModel price);
         
         /// <summary>
         /// Обновить информацию об изображениях.
@@ -55,7 +62,7 @@ namespace ProductService.Clients
         /// <param name="prices"></param>
         /// <returns></returns>
         [Put("/Price/UpdateMany")]
-        Task<ActionResult> UpdateMany(IEnumerable<PriceModel> prices);
+        Task<ApiResponse<PriceModel>> UpdateMany(IEnumerable<PriceModel> prices);
 
         /// <summary>
         /// Удалить стоимость.
@@ -63,7 +70,7 @@ namespace ProductService.Clients
         /// <param name="id"></param>
         /// <returns></returns>
         [Delete("/Price")]
-        Task<ActionResult> Delete(Guid id);
+        Task<ApiResponse<PriceModel>> Delete(Guid id);
 
         /// <summary>
         /// Удалить цены.
@@ -71,6 +78,6 @@ namespace ProductService.Clients
         /// <param name="ids"></param>
         /// <returns></returns>
         [Delete("/Price/DeleteMany")]
-        Task<ActionResult> DeleteMany(IEnumerable<Guid> ids);
+        Task<ApiResponse<PriceModel>> DeleteMany(IEnumerable<Guid> ids);
     }
 }

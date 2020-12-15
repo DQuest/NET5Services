@@ -30,5 +30,16 @@ namespace ImageService.Controllers
         {
             return await _productImageService.GetAllImagesForProduct(productId);
         }
+
+        /// <summary>
+        /// Удаление изображений для продукта.
+        /// </summary>
+        /// <param name="productId"></param>
+        /// <returns></returns>
+        [HttpDelete("{productId}")]
+        public async Task<ActionResult> DeleteImagesForProduct(Guid productId)
+        {
+            return await _productImageService.DeleteImagesForProduct(productId);
+        }
     }
 }

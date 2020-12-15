@@ -8,5 +8,7 @@ namespace PriceService.Interfaces
     public interface IProductPriceRepository
     {
         Task<ActionResult<PriceModel>> GetPriceForProduct(Guid productId);
+
+        Task<ActionResult> DeletePriceForProduct(Guid productId);
     }
 }

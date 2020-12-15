@@ -29,5 +29,16 @@ namespace PriceService.Controllers
         {
             return await _productPriceRepository.GetPriceForProduct(productId);
         }
+
+        /// <summary>
+        /// Удаление цены для продукта.
+        /// </summary>
+        /// <param name="productId"></param>
+        /// <returns></returns>
+        [HttpDelete("{productId}")]
+        public async Task<ActionResult> DeletePriceForProduct(Guid productId)
+        {
+            return await _productPriceRepository.DeletePriceForProduct(productId);
+        }
     }
 }

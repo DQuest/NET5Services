@@ -36,9 +36,32 @@ namespace PriceService.Repositories
             {
                 return new NotFoundObjectResult($"Цена для продукта с идентификатором {productId} не найдена в БД");
             }
-            
+
             // gives emphasis of the content that is returned
             return new ObjectResult(_mapper.Map<PriceModel>(priceForProduct));
+        }
+
+        public async Task<ActionResult> DeletePriceForProduct(Guid productId)
+        {
+            var allPrices = await base.GetAll();
+
+            var priceForProduct = allPrices
+                .Where(x => x.IsDeleted == false)
+                .Where(x => x.ProductId == productId)
+                .FirstOrDefault(x => x.IsLast);
+
+            if (priceForProduct == null)
+            {
+                return new NotFoundObjectResult($"Цена для продукта с идентификатором {productId} не найдена в БД");
+            }
+
+            priceForProduct.IsDeleted = true;
+            priceForProduct.LastSavedDate = DateTime.Now;
+            priceForProduct.IsLast = false;
+
+            await base.Update(priceForProduct);
+
+            return new NoContentResult();
         }
     }
 }
